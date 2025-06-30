@@ -4,28 +4,32 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 package-lock.json
+
+# 👇 Environment files
 .env
 .env.local
 .env.*.local
 
-# 👇 Angular
-/dist
-/tmp
-/out-tsc
-/bazel-out
-.angular/cache/
-.angular/config.json
+# 👇 Angular build / cache files
+/dist/
+/tmp/
+/out-tsc/
+/bazel-out/
+/client/.angular/cache/
+/client/.angular/config.json
 .sass-cache/
 /connect.lock
-/typings
+/typings/
 
-# 👇 Editor/IDE
-.vscode/*
+# 👇 VSCode (keep some configs, ignore workspace data)
+/.vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-.history/*
+
+# 👇 Other IDEs / editors
+.history/
 .idea/
 .project
 .classpath
@@ -38,15 +42,15 @@ package-lock.json
 *.njsproj
 *.sln
 
-# 👇 Sistemi operativi
+# 👇 OS generated files
 Thumbs.db
 .DS_Store
 
-# 👇 Logs e output
+# 👇 Logs and output
 logs/
 *.log
 
-# 👇 Test coverage
+# 👇 Test coverage reports
 coverage/
 
 # 👇 Others
