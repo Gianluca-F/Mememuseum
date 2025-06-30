@@ -1,8 +1,7 @@
 {
-  "name": "backend",
+  "name": "mememuseum-app",
   "version": "1.0.0",
-  "description": "Backend for MEMEMUSEUM project.",
-  "main": "index.js",
+  "description": "Tool for starting frontend and backend of the MEMEMUSEUM project.",
   "type": "module",
   "license": "AGPL-version-3.0",
   "private": false,
@@ -21,22 +20,12 @@
     "url": "https://github.com/Gianluca-F/"
   },
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "client": "cd client && npm start",
+    "server": "cd server && npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
-    "bcrypt": "^6.0.0",
-    "body-parser": "^2.2.0",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
-    "csurf": "^1.11.0",
-    "dotenv": "^17.0.0",
-    "express": "^5.1.0",
-    "express-validator": "^7.2.1",
-    "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "morgan": "^1.10.0",
-    "multer": "^2.0.1",
-    "xss-clean": "^0.1.4"
+  "devDependencies": {
+    "concurrently": "^9.2.0"
   }
 }
