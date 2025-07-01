@@ -7,17 +7,13 @@ import xss from 'xss-clean';
 import csurf from 'csurf';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import bodyParser from 'body-parser';
+import swaggerUI from 'swagger-ui-express';
+import swaggerJSDoc from 'swagger-jsdoc';
 
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { authenticationRouter } from './routes/authenticationRouter.js';
 
 // Configurazione dotenv per variabili ambiente
 dotenv.config();
-
-// Ricostruzione di __dirname (non disponibile in ES modules)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,22 +21,43 @@ const PORT = process.env.PORT || 3000;
 // Middleware per il logging delle richieste
 app.use(morgan('dev'));
 
-// Middleware di sicurezza e parsing
+// Middleware di sicurezza
 app.use(helmet());
 app.use(xss());
-app.use(cors({
-  origin: 'http://localhost:4200',
-  credentials: true
-}));
-app.use(cookieParser());
-app.use(bodyParser.json());
-
-// CSRF protection (puoi attivarla o disattivarla secondo necessità)
+app.use(cors());
 app.use(csurf({ cookie: true }));
 
-// Rotta base
-app.get('/', (req, res) => {
-  res.send('MEMEMUSEUM backend is running!');
+// Middleware per il parsing
+app.use(cookieParser());
+app.use(express.json());
+
+
+//generate OpenAPI spec and show swagger ui
+// Initialize swagger-jsdoc -> returns validated swagger spec in json format
+const swaggerSpec = swaggerJSDoc({
+  definition: {
+    openapi: '3.1.0',
+    info: {
+      title: 'Meme Museum API',
+      version: '1.0.0',
+    },
+  },
+  apis: ['./routes/*Router.js'], // files containing annotations
+});
+
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+
+
+// Definizione delle routes
+app.use('/auth', authenticationRouter);
+
+//error handler
+app.use( (err, req, res, next) => {
+  console.log(err.stack);
+  res.status(err.status || 500).json({
+    code: err.status || 500,
+    description: err.message || "An error occurred"
+  });
 });
 
 app.listen(PORT, () => {
