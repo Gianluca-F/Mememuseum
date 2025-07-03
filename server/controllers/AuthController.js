@@ -1,6 +1,5 @@
 import bcrypt from 'bcrypt';
 import { User } from '../data/Database.js';
-import Jwt from 'jsonwebtoken';
 
 export class AuthController {
 
@@ -50,4 +49,11 @@ export class AuthController {
     }
   }
 
+  static async canUserModifyMeme(userId, memeId) {
+    // TODO: Implement logic to check if the user can modify the meme
+  }
+
+  static async canUserModifyComment(userId, commentId) {
+    // TODO: Implement logic to check if the user can modify the comment
+  }
 }
