@@ -1,24 +1,27 @@
 // models/Vote.js
 import { DataTypes } from 'sequelize';
-import { Meme } from '../Database.js'; // Adjust the import path as necessary
+import { Meme } from '../Database.js';
 
 export function createModel(database) {
   database.define('Vote', {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true
+    },
     type: {
       type: DataTypes.ENUM('upvote', 'downvote'),
       allowNull: false,
-    },
-    UserId: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      primaryKey: true,
-    },
-    MemeId: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      primaryKey: true,
     }
   }, {
+
+    indexes: [
+      {
+        unique: true,
+        fields: ['UserId', 'MemeId']
+      }
+    ],
+
     hooks: {
 
       afterCreate: async (vote, options) => {
@@ -36,7 +39,6 @@ export function createModel(database) {
         const { transaction } = options;
         const meme = await Meme.findByPk(vote.MemeId);
 
-        console.log("Updating vote type:", vote.type);
         if (vote.previous('type') !== vote.type) {
           if (vote.type === 'upvote') {
             await Promise.all([
@@ -49,6 +51,17 @@ export function createModel(database) {
               meme.increment('downvotes', { transaction })
             ]);
           }
+        }
+      },
+
+      afterDestroy: async (vote, options) => {
+        const { transaction } = options;
+        const meme = await Meme.findByPk(vote.MemeId);
+
+        if (vote.type === 'upvote') {
+          await meme.decrement('upvotes', { transaction });
+        } else {
+          await meme.decrement('downvotes', { transaction });
         }
       }
     }
