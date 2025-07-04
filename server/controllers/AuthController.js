@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { User } from '../data/Database.js';
+import { User, Meme, Comment } from '../data/Database.js';
 
 export class AuthController {
 

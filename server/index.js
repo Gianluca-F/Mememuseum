@@ -10,6 +10,7 @@ import dotenv from 'dotenv';
 
 import { authenticationRouter } from './routes/authenticationRouter.js';
 import { memeRouter } from './routes/memeRouter.js';
+import { commentRouter } from './routes/commentRouter.js';
 import { apiDocsRouter } from './utils/swaggerUI.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
@@ -24,9 +25,9 @@ app.use(morgan('dev'));
 
 // Middleware di sicurezza
 app.use(helmet());
-app.use(xss());
+//app.use(xss()); // NOTE: commentato per swagger UI, da abilitare in produzione
 app.use(cors());
-app.use(csurf({ cookie: true }));
+//app.use(csurf({ cookie: true })); // NOTE: commentato per evitare problemi con Swagger UI, da abilitare in produzione
 
 // Middleware per il parsing
 app.use(cookieParser());

@@ -1,4 +1,4 @@
-import { Meme, User, MemeOfTheDay} from "../data/Database.js";
+import { Meme, User, Comment, MemeOfTheDay, Vote } from "../data/Database.js";
 import { Op } from "sequelize";
 
 export class MemeController {
@@ -94,16 +94,18 @@ export class MemeController {
         {
           model: User,
           attributes: ['id', 'userName'],
-          required: true,
+          required: true
         },
         {
           model: Comment,
           attributes: ['id', 'content', 'createdAt'],
-          include: {
-            model: User,
-            attributes: ['id', 'userName'],
-            required: true
-          }
+          include: [
+            {
+              model: User,
+              attributes: ['id', 'userName'],
+              required: true
+            }
+          ],
         }
       ]
     });

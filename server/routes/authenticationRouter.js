@@ -8,9 +8,8 @@ export const authenticationRouter = express.Router();
  * @swagger
  * /auth/login:
  *   post:
- *     description:  Authenticate user
- *     produces:
- *       - application/json
+ *     summary: Authenticate user
+ *     tags: [Authentication]
  *     requestBody:
  *       description: User credentials for authentication
  *       required: true
@@ -36,6 +35,16 @@ export const authenticationRouter = express.Router();
  *                 token:
  *                   type: string
  *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+ *       400:
+ *         description: Invalid user data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Username and password are required"
  *       401:
  *         description: Invalid credentials
  *         content:
@@ -61,9 +70,8 @@ authenticationRouter.post('/login', async (req, res, next) => {
  * @swagger
  * /auth/signup:
  *   post:
- *     description: Save a new user
- *     produces:
- *       - application/json
+ *     summary: Save a new user
+ *     tags: [Authentication]
  *     requestBody:
  *       description: User credentials for registration
  *       required: true
