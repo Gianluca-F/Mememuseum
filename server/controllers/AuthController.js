@@ -26,6 +26,8 @@ export class AuthController {
     return user;
   }
 
+  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
   static async saveUser({ userName, password }) {
     // Validate input
     if (!userName || !password) {

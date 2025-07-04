@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 
 import { authenticationRouter } from './routes/authenticationRouter.js';
+import { memeRouter } from './routes/memeRouter.js';
 import { apiDocsRouter } from './utils/swaggerUI.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
@@ -36,6 +37,7 @@ app.use(apiDocsRouter);
 
 // Definizione delle routes
 app.use('/auth', authenticationRouter);
+app.use('/memes', memeRouter);
 
 // Middleware per gestire gli errori
 app.use(errorHandler);

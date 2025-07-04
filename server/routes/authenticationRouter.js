@@ -6,7 +6,7 @@ export const authenticationRouter = express.Router();
 
 /**
  * @swagger
- * /login:
+ * /auth/login:
  *   post:
  *     description:  Authenticate user
  *     produces:
@@ -47,7 +47,7 @@ export const authenticationRouter = express.Router();
  *                   type: string
  *                   example: "Invalid username or password"
  */
-authenticationRouter.post('/login', async (req, res) => {
+authenticationRouter.post('/login', async (req, res, next) => {
   try {  
     const user = await AuthController.checkCredentials(req.body);
     const token = issueToken(user.id, user.userName);
@@ -59,7 +59,7 @@ authenticationRouter.post('/login', async (req, res) => {
 
 /**
  * @swagger
- * /signup:
+ * /auth/signup:
  *   post:
  *     description: Save a new user
  *     produces:

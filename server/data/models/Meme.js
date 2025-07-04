@@ -11,16 +11,17 @@ export function createModel(database) {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    imageUrl: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
     description: {
       type: DataTypes.TEXT,
       allowNull: true
     },
+    imageUrl: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      unique: true // Ensure that each meme has a unique image URL
+    },
     tags: {
-      type: DataTypes.ARRAY(DataTypes.TEXT), // solo per psql
+      type: DataTypes.ARRAY(DataTypes.TEXT), // works only with PostgreSQL
       allowNull: true,
     },
     upvotes: {
