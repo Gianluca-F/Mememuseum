@@ -5,6 +5,7 @@ import { createModel as createUserModel } from "./models/User.js";
 import { createModel as createMemeModel } from "./models/Meme.js";
 import { createModel as createCommentModel } from "./models/Comment.js";
 import { createModel as createVoteModel } from "./models/Vote.js";
+import { createModel as createMemeOfTheDayModel } from "./models/MemeOfTheDay.js";
 
 export const database = new Sequelize(process.env.DB_CONNECTION_URI, {
   dialect: process.env.DIALECT || "postgres",
@@ -15,8 +16,9 @@ createUserModel(database);
 createMemeModel(database);
 createCommentModel(database);
 createVoteModel(database);
+createMemeOfTheDayModel(database);
 
-export const { User, Meme, Comment, Vote } = database.models;
+export const { User, Meme, Comment, Vote, MemeOfTheDay } = database.models;
 
 
 // associations configuration
@@ -58,6 +60,14 @@ Meme.Votes = Meme.hasMany(Vote, {
   foreignKey: { allowNull: false, onDelete: 'CASCADE' }
 });
 Vote.Meme = Vote.belongsTo(Meme, {
+  foreignKey: { allowNull: false, onDelete: 'CASCADE' }
+});
+
+// Meme 1 to 1 MemeOfTheDay
+Meme.MemeOfTheDay = Meme.hasOne(MemeOfTheDay, {
+  foreignKey: { allowNull: false, onDelete: 'CASCADE' }
+});
+MemeOfTheDay.Meme = MemeOfTheDay.belongsTo(Meme, {
   foreignKey: { allowNull: false, onDelete: 'CASCADE' }
 });
 

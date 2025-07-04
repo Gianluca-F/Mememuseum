@@ -211,3 +211,14 @@ memeRouter.get('/:id', async (req, res, next) => {
     next(err);
   }
 });
+
+
+
+memeRouter.get('/meme-of-the-day', async (req, res, next) => {
+  try {
+    const memeOfTheDay = await MemeController.getMemeOfTheDay();
+    res.json(memeOfTheDay);
+  } catch (err) {
+    next(err);
+  }
+});

@@ -1,4 +1,4 @@
-import { Meme, User } from "../data/Database";
+import { Meme, User, MemeOfTheDay} from "../data/Database.js";
 import { Op } from "sequelize";
 
 export class MemeController {
@@ -129,4 +129,53 @@ export class MemeController {
       comments: meme.Comments || []
     };
   }
+
+  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  static async getMemeOfTheDay() {
+    const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+
+    // Verify if a meme of the day already exists for today
+    const memeOfTheDay = await MemeOfTheDay.findOne({ where: { date: today } });
+
+    if (memeOfTheDay) {
+      return memeOfTheDay.MemeId; // Return the existing meme ID
+    }
+
+    // If it doesn't exist yet: select the best meme of the day
+
+    const twoWeeksAgo = new Date();
+    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
+    let memes = await Meme.findAll({
+      where: {
+        createdAt: {
+          [Op.gte]: twoWeeksAgo, // Only consider memes created in the last 14 days
+        },
+      },
+    });
+
+    if (!memes || memes.length === 0) {
+      memes = await Meme.findAll(); // If no memes in the last 14 days, fallback to all memes
+    }
+
+    if (!memes || memes.length === 0) {
+      throw { status: 404, message: "No memes available to select as meme of the day" };
+    }
+
+    // Choose a random meme
+    const randomIndex = Math.floor(Math.random() * memes.length);
+    const memeId = memes[randomIndex].id;
+
+    // Save the meme of the day in the caching table
+    await MemeOfTheDay.create({
+      date: today,
+      MemeId: memeId,
+    });
+
+    return memeId;
+  }
+
+  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
 }
