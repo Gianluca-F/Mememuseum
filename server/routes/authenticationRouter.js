@@ -21,10 +21,10 @@ export const authenticationRouter = express.Router();
  *             properties:
  *               userName:
  *                 type: string
- *                 example: st0ck
+ *                 example: "st0ck"
  *               password:
  *                 type: string
- *                 example: seCurep4ass
+ *                 example: "seCurep4ass"
  *     responses:
  *       200:
  *         description: User authenticated successfully
@@ -35,7 +35,7 @@ export const authenticationRouter = express.Router();
  *               properties:
  *                 token:
  *                   type: string
- *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+ *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
  *       401:
  *         description: Invalid credentials
  *         content:
@@ -74,10 +74,10 @@ authenticationRouter.post('/login', async (req, res, next) => {
  *             properties:
  *               userName:
  *                 type: string
- *                 example: st0ck
+ *                 example: "st0ck"
  *               password:
  *                 type: string
- *                 example: seCurep4ass
+ *                 example: "seCurep4ass"
  *     responses:
  *       201:
  *         description: User saved successfully
@@ -88,7 +88,7 @@ authenticationRouter.post('/login', async (req, res, next) => {
  *               properties:
  *                 token:
  *                   type: string
- *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+ *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
  *       400:
  *         description: Invalid user data
  *         content:
