@@ -1,4 +1,4 @@
-import { isTokenValid } from '../utils/JwtUtils';
+import { isTokenValid } from '../utils/JwtUtils.js';
 
 const SECRET_KEY = process.env.TOKEN_SECRET || 'una_chiave_segreta_di_sviluppo';
 

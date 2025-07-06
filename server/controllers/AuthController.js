@@ -6,21 +6,21 @@ export class AuthController {
   static async checkCredentials({ userName, password}) {
     // Validate input
     if (!userName || !password) {
-      throw { status: 400, error: 'Username and password are required' };
+      throw { status: 400, message: 'Username and password are required' };
     }
 
     // Find user by username
     const user = await User.findOne({ where: { userName: userName } });
 
     if (!user) {
-      throw { status: 401, error: 'Invalid credentials' };
+      throw { status: 401, message: 'Invalid credentials' };
     }
 
     // Compare provided password with hashed password in database
     const isValidPassword = await bcrypt.compare(pwd, user.password);
 
     if (!isValidPassword) {
-      throw { status: 401, error: 'Invalid credentials' };
+      throw { status: 401, message: 'Invalid credentials' };
     }
 
     return user;
@@ -31,7 +31,7 @@ export class AuthController {
   static async saveUser({ userName, password }) {
     // Validate input
     if (!userName || !password) {
-      throw { status: 400, error: 'Username and password are required' };
+      throw { status: 400, message: 'Username and password are required' };
     }
 
     try {
@@ -41,12 +41,10 @@ export class AuthController {
         password: password, // Hashing will be handled by the User model
       });
     } catch (err) {
-      // Handle errors, such as unique constraint violations
-      console.error('Error creating user:', err);
       if (err.name === 'SequelizeUniqueConstraintError') {
-        throw { status: 409, error: 'Username already exists' };
+        throw { status: 409, message: 'Username already exists' };
       } else {
-        throw { status: 500, error: 'Error creating user' };
+        throw { status: 500, message: 'Error creating user' };
       }
     }
   }
