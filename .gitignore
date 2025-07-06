@@ -50,6 +50,10 @@ Thumbs.db
 logs/
 *.log
 
+# 👇 Uploads directory
+**/uploads/*
+!.gitkeep
+
 # 👇 Test coverage reports
 coverage/
 
