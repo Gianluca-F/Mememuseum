@@ -33,6 +33,9 @@ app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 
+// Serve i file statici dalla cartella uploads
+app.use('/uploads', express.static('uploads'));
+
 // Setup Swagger UI per la documentazione API in /api-docs
 app.use(apiDocsRouter);
 

@@ -1,9 +1,10 @@
 import { Meme, User, Comment, MemeOfTheDay, Vote } from "../data/Database.js";
 import { Op } from "sequelize";
+import { normalizeTags } from "../utils/tagsHelper.js";
 
 export class MemeController {
 
-  static async getAllMemes({ page = 1, limit = 10, title = '', tags = [], match = 'any',sortedBy = 'createdAt', sortDirection = 'DESC' }) {
+  static async getAllMemes({ page = 1, limit = 10, title = '', tags, match = 'any',sortedBy = 'createdAt', sortDirection = 'DESC' }) {
     const validatedPage = Math.max(1, parseInt(page) || 1);
     const validatedLimit = Math.min(Math.max(1, parseInt(limit) || 10), 50);
     const offset = (validatedPage - 1) * validatedLimit;
@@ -15,16 +16,16 @@ export class MemeController {
       where.title = { [Op.iLike]: `%${title.trim()}%` };
     }
 
-    if (tags && tags.length > 0) { // Check if tags are provided
-      const cleanedTags = tags.map(tag => tag.toLowerCase().trim()).filter(Boolean);
+    const cleanedTags = normalizeTags(tags);
 
+    if (cleanedTags.length > 0) {
       where.tags = match === 'all'
         ? { [Op.contains]: cleanedTags } // Match all tags
         : { [Op.overlap]: cleanedTags }; // Match any tags
     }
 
     // Validate sortedBy and sortDirection
-    const orderedBy = ['createdAt', 'upvotesNumber', 'downvotesNumber', 'commentsNumber'].includes(sortedBy)
+    const orderedBy = ['createdAt', 'upvotes', 'downvotes', 'commentsCount'].includes(sortedBy)
       ? sortedBy
       : 'createdAt';
 
@@ -52,7 +53,7 @@ export class MemeController {
       order,
     });
 
-    const formattedMemes = memes.map(meme => ({
+    const formattedMemes = memes?.map(meme => ({
       id: meme.id,
       title: meme.title,
       imageUrl: meme.imageUrl,
@@ -111,9 +112,20 @@ export class MemeController {
     });
 
     if (!meme) {
-      throw { status: 404, message: "Meme non trovato" };
+      throw { status: 404, message: "Meme not found" };
     }
-    
+
+    /*
+    const formattedComments = meme.Comments?.map(comment => ({
+      id: comment.id,
+      content: comment.content,
+      createdAt: comment.createdAt,
+      user: {
+        id: comment.User.id,
+        userName: comment.User.userName
+      }
+    }));
+
     return {
       id: meme.id,
       title: meme.title,
@@ -128,8 +140,10 @@ export class MemeController {
         id: meme.User.id,
         userName: meme.User.userName,
       },
-      comments: meme.Comments || []
+      comments: formattedComments
     };
+    */
+    return meme.toJSON(); //??? Works as expected?
   }
 
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -179,5 +193,35 @@ export class MemeController {
   }
 
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  static async createMeme(memeData, userId) {
+    if (!memeData || !memeData.title || !memeData.imageUrl || !userId) {
+      throw { status: 400, message: "Missing required data" };
+    }
+
+    memeData.title = memeData.title.trim();
+    memeData.description = memeData.description?.trim();
+    memeData.tags = normalizeTags(memeData.tags);
+
+    try {
+    const newMeme = await Meme.create({
+      ...memeData,
+      UserId: userId
+    });
+
+      return newMeme.toJSON(); //??? Works as expected?
+    } catch (err) {
+      if (err.name === 'SequelizeUniqueConstraintError' || err.name === 'SequelizeValidationError') {
+        throw { status: 400, message: "Invalid meme data" };
+      }
+      if( err.name === 'SequelizeForeignKeyConstraintError') {
+        throw { status: 409, message: "User not found" };
+      }
+      throw { status: 500, message: "An unexpected error occurred while creating the meme" };
+    }
+  }
+
+  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
 
 }
