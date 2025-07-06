@@ -1,6 +1,8 @@
 import { Meme, User, Comment, MemeOfTheDay, Vote } from "../data/Database.js";
 import { Op } from "sequelize";
 import { normalizeTags } from "../utils/tagsHelper.js";
+import fs from "fs/promises";
+import path from "path";
 
 export class MemeController {
 
@@ -204,13 +206,22 @@ export class MemeController {
     memeData.tags = normalizeTags(memeData.tags);
 
     try {
-    const newMeme = await Meme.create({
-      ...memeData,
-      UserId: userId
-    });
+      const newMeme = await Meme.create({
+        ...memeData,
+        UserId: userId
+      });
 
       return newMeme.toJSON(); //??? Works as expected?
     } catch (err) {
+      // Remove meme saved in uploads/ by the multer middleware
+      if (memeData.imageUrl) {
+        const filePath = path.join(process.cwd(), memeData.imageUrl);
+        try {
+          await fs.unlink(filePath);
+        } catch (fsErr) {
+          console.error(`Failed to delete file ${filePath}:`, fsErr);
+        }
+      }
       if (err.name === 'SequelizeUniqueConstraintError' || err.name === 'SequelizeValidationError') {
         throw { status: 400, message: "Invalid meme data" };
       }
