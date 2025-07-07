@@ -1,4 +1,4 @@
-import { Meme, User, Comment, MemeOfTheDay, Vote } from "../data/Database.js";
+import { Meme, User, Comment, MemeOfTheDay, Vote, database } from "../data/Database.js";
 import { Op } from "sequelize";
 import { normalizeTags } from "../utils/tagsHelper.js";
 import fs from "fs/promises";
@@ -306,6 +306,55 @@ export class MemeController {
     }
 
     await meme.destroy();
+  }
+
+  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  static async voteMeme(memeId, type, userId) {
+    if (!['upvote', 'downvote'].includes(type)) {
+      throw { status: 400, message: 'Invalid vote type. Must be "upvote" or "downvote"' };
+    }
+
+    const transaction = await database.transaction();
+
+    const meme = await Meme.findByPk(memeId, { transaction });
+    if (!meme) {
+      throw { status: 404, message: 'Meme not found' };
+    }
+
+    const existingVote = await Vote.findOne({
+      where: { MemeId: memeId, UserId: userId },
+      transaction
+    });
+
+    try {
+      let message;
+      if (!existingVote) {
+        await Vote.create({ type, MemeId: memeId, UserId: userId }, { transaction });
+        message = `Vote recorded as ${type}`;
+      } else if (existingVote.type === type) {
+        await existingVote.destroy({ transaction });
+        message = `Vote removed`;
+      } else {
+        existingVote.type = type;
+        await existingVote.save({ transaction });
+        message = `Vote updated to ${type}`;
+      }
+
+      await transaction.commit();
+      return { meme: await meme.reload(), message };
+
+    } catch (err) {
+      await transaction.rollback();
+
+      if (err.name === 'SequelizeValidationError') {
+        throw { status: 400, message: 'Invalid vote data' };
+      }
+      if (err.name === 'SequelizeForeignKeyConstraintError') {
+        throw { status: 400, message: 'Invalid meme or user reference' };
+      }
+      throw { status: 500, message: 'An error occurred while processing the vote' };
+    }
   }
 
 }

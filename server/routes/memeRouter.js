@@ -398,16 +398,10 @@ memeRouter.get('/:id', async (req, res, next) => {
  *                   type: string
  *                   format: date-time
  *                   example: "2025-07-04T12:00:00Z"
- *                 user:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                       format: uuid
- *                       example: "098e2317-e89b-12d3-a456-426614134789"
- *                     userName:
- *                       type: string
- *                       example: "memeLord"
+ *                 UserId:
+ *                   type: string
+ *                   format: uuid
+ *                   example: "098e2317-e89b-12d3-a456-426614134789"
  *       400:
  *         description: Invalid meme data
  *         content:
@@ -538,16 +532,10 @@ memeRouter.post('/', authenticateToken, uploader.single('image'), async (req, re
  *                   type: string
  *                   format: date-time
  *                   example: "2025-07-04T12:00:00Z"
- *                 user:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                       format: uuid
- *                       example: "098e2317-e89b-12d3-a456-426614134789"
- *                     userName:
- *                       type: string
- *                       example: "memeLord"
+ *                 UserId:
+ *                  type: string
+ *                  format: uuid
+ *                  example: "098e2317-e89b-12d3-a456-426614134789"
  *       400:
  *         description: Missing user ID or meme ID
  *         content:
@@ -674,6 +662,141 @@ memeRouter.delete('/:id', authenticateToken, ensureUsersModifyOnlyTheirMemes, as
   try {
     await MemeController.deleteMeme(req.params.id);
     res.status(204).send(); // No content
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * @swagger
+ * /memes/{id}/vote:
+ *   post:
+ *     summary: Vote or toggle vote on a meme
+ *     description: Allows an authenticated user to upvote or downvote a meme. 
+ *                  If the same vote is sent twice, it will remove the vote.
+ *     tags:
+ *       - Memes
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the meme to vote on
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - type
+ *             properties:
+ *               type:
+ *                 type: string
+ *                 enum: [upvote, downvote]
+ *                 example: upvote
+ *     responses:
+ *       200:
+ *         description: Vote registered or updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 meme:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       format: uuid
+ *                       example: "123e4567-e89b-12d3-a456-426614174000"
+ *                     title:
+ *                       type: string
+ *                       example: "When your code finally works"
+ *                     description:
+ *                       type: string
+ *                       example: "That moment after hours of debugging..."
+ *                     imageUrl:
+ *                       type: string
+ *                       example: "https://example.com/meme.jpg"
+ *                     tags:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       example: ["programming", "debugging"]
+ *                     upvotes:
+ *                       type: integer
+ *                       example: 123
+ *                     downvotes:
+ *                       type: integer
+ *                       example: 7
+ *                     commentsCount:
+ *                       type: integer
+ *                       example: 5
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2025-07-04T12:00:00Z"
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2025-07-05T10:00:00Z"
+ *                     UserId:
+ *                      type: string
+ *                      format: uuid
+ *                      example: "098e2317-e89b-12d3-a456-426614134789"
+ *                 message:
+ *                   type: string
+ *                   example: Vote recorded as upvote
+ *       400:
+ *         description: Invalid request or vote type
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Invalid vote type. Must be "upvote" or "downvote"
+ *       401:
+ *         description: Unauthorized, missing or invalid token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Unauthorized
+ *       404:
+ *         description: Meme not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Meme not found
+ *       500:
+ *         description: Server error while processing vote
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: An error occurred while processing the vote
+ */
+memeRouter.post('/:id/vote', authenticateToken, async (req, res, next) => {
+  try {
+    const { meme, message } = await MemeController.voteMeme(req.params.id, req.body.type, req.user.id);
+    res.json({ meme, message });
   } catch (err) {
     next(err);
   }
