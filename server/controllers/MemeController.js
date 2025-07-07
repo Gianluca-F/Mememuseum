@@ -234,5 +234,78 @@ export class MemeController {
 
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
+  static async updateMeme(memeId, memeData, userId) {
+    if (!memeId || !memeData || !userId) {
+      throw { status: 400, message: "Missing required data" };
+    }
+
+    // Trim and normalize meme data
+    if (memeData.title) memeData.title = memeData.title.trim();
+    if (memeData.description) memeData.description = memeData.description.trim();
+    if (memeData.tags) memeData.tags = normalizeTags(memeData.tags);
+    
+    const meme = await Meme.findByPk(memeId);
+    if (!meme) {
+      throw { status: 404, message: "Meme not found" };
+    }
+
+    try {
+
+      // If the imageUrl is updated, delete the old image file
+      if (memeData.imageUrl && meme.imageUrl) {
+        const oldPath = path.join(process.cwd(), meme.imageUrl);
+        try {
+          await fs.unlink(oldPath);
+        } catch (fsErr) {
+          console.error(`Failed to delete file ${oldPath}:`, fsErr);
+        }
+      }
+
+      // Update the meme
+      meme.set(memeData);
+      await meme.save();
+
+      return meme.toJSON();
+    } catch (err) {
+      // Remove meme saved in uploads/ by the multer middleware
+      if (memeData.imageUrl) {
+        const filePath = path.join(process.cwd(), memeData.imageUrl);
+        try {
+          await fs.unlink(filePath);
+        } catch (fsErr) {
+          console.error(`Failed to delete file ${filePath}:`, fsErr);
+        }
+      }
+      if (err.name === 'SequelizeUniqueConstraintError' || err.name === 'SequelizeValidationError') {
+        throw { status: 400, message: "Invalid meme data" };
+      }
+      throw { status: 500, message: "An unexpected error occurred while updating the meme" };
+    }
+  }
+
+  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  static async deleteMeme(memeId) {
+    if (!memeId) {
+      throw { status: 400, message: "Meme ID is required" };
+    }
+
+    const meme = await Meme.findByPk(memeId);
+    if (!meme) {
+      throw { status: 404, message: "Meme not found" };
+    }
+
+    // Delete the image file associated with the meme
+    if (meme.imageUrl) {
+      const filePath = path.join(process.cwd(), meme.imageUrl);
+      try {
+        await fs.unlink(filePath);
+      } catch (fsErr) {
+        console.error(`Failed to delete file ${filePath}:`, fsErr);
+      }
+    }
+
+    await meme.destroy();
+  }
 
 }

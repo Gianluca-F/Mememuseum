@@ -49,9 +49,28 @@ export class AuthController {
     }
   }
 
+  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
   static async canUserModifyMeme(userId, memeId) {
-    // TODO: Implement logic to check if the user can modify the meme
+    if (!userId || !memeId) {
+      throw { status: 400, message: 'Missing user ID or meme ID' };
+    }
+
+    const meme = await Meme.findByPk(memeId, {
+      attributes: ['UserId'],
+      raw: true,
+    });
+
+    if (!meme) {
+      throw { status: 404, message: 'Meme not found' };
+    }
+
+    if (meme.UserId !== userId) {
+      throw { status: 403, message: 'Forbidden! You do not have permissions to modify this meme' };
+    }
   }
+
+  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
   static async canUserModifyComment(userId, commentId) {
     // TODO: Implement logic to check if the user can modify the comment

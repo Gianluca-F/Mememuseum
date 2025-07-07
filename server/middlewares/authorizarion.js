@@ -1,6 +1,5 @@
+import { AuthController } from '../controllers/AuthController.js';
 import { isTokenValid } from '../utils/JwtUtils.js';
-
-const SECRET_KEY = process.env.TOKEN_SECRET || 'una_chiave_segreta_di_sviluppo';
 
 export function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
@@ -17,4 +16,16 @@ export function authenticateToken(req, res, next) {
     req.user = user;
     next();
   });
+}
+
+export async function ensureUsersModifyOnlyTheirMemes(req, res, next) {
+  const userId = req.user.id;
+  const memeId = req.params.id;
+
+  try {
+    await AuthController.canUserModifyMeme(userId, memeId); // Throws an error if the user cannot modify the meme
+    next();
+  } catch (err) {
+    next(err);
+  }
 }

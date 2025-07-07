@@ -1,6 +1,6 @@
 import express from 'express';
 import { MemeController } from '../controllers/MemeController.js';
-import { authenticateToken } from '../middlewares/authorizarion.js';
+import { authenticateToken, ensureUsersModifyOnlyTheirMemes } from '../middlewares/authorizarion.js';
 import { uploader } from '../middlewares/uploader.js';
 
 export const memeRouter = express.Router();
@@ -459,6 +459,221 @@ memeRouter.post('/', authenticateToken, uploader.single('image'), async (req, re
     };
     const newMeme = await MemeController.createMeme(memeData, req.user.id);
     res.status(201).json(newMeme);
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * @swagger
+ * /memes/{id}:
+ *   put:
+ *     summary: Update an existing meme
+ *     description: Update the title, description, tags, and image of a meme
+ *     tags: [Memes]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the meme to update
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: "Updated Meme Title"
+ *               description:
+ *                 type: string
+ *                 example: "Updated description for the meme"
+ *               tags:
+ *                 type: string
+ *                 description: "Comma separated tags"
+ *                 example: "funny, coding"
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Meme updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   format: uuid
+ *                   example: "123e4567-e89b-12d3-a456-426614174000"
+ *                 title:
+ *                   type: string
+ *                   example: "Updated Meme Title"
+ *                 description:
+ *                   type: string
+ *                   example: "Updated description for the meme"
+ *                 imageUrl:
+ *                   type: string
+ *                   example: "https://example.com/updated-meme.jpg"
+ *                 tags:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: ["funny", "coding"]
+ *                 upvotes:
+ *                   type: integer
+ *                   example: 150
+ *                 downvotes:
+ *                   type: integer
+ *                   example: 5
+ *                 commentsCount:
+ *                   type: integer
+ *                   example: 10
+ *                 createdAt:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2025-07-04T12:00:00Z"
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       format: uuid
+ *                       example: "098e2317-e89b-12d3-a456-426614134789"
+ *                     userName:
+ *                       type: string
+ *                       example: "memeLord"
+ *       400:
+ *         description: Missing user ID or meme ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Missing user ID or meme ID"
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Forbidden! You do not have permissions to view or modify this resource"
+ *       404:
+ *         description: Not Found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Meme not found"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "An error occurred while updating the meme"
+ */
+memeRouter.put('/:id', authenticateToken, ensureUsersModifyOnlyTheirMemes, uploader.single('image'), async (req, res, next) => {
+  try {
+    const memeData = {};
+    if (req.body.title) {
+      memeData.title = req.body.title;
+    }
+    if (req.body.description) {
+      memeData.description = req.body.description;
+    }
+    if (req.body.tags) {
+      memeData.tags = req.body.tags;
+    }
+    if (req.file) { // Check if a new image file was uploaded
+      memeData.imageUrl = `/uploads/${req.file.filename}`;
+    }
+    const updatedMeme = await MemeController.updateMeme(req.params.id, memeData, req.user.id);
+    res.json(updatedMeme);
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * @swagger
+ * /memes/{id}:
+ *   delete:
+ *     summary: Delete a meme
+ *     description: Delete a meme by its ID. Only the meme owner can delete it.
+ *     tags: [Memes]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the meme to delete
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     responses:
+ *       204:
+ *         description: Meme deleted successfully (no content)
+ *       400:
+ *         description: Meme ID is required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Meme ID is required"
+ *       403:
+ *         description: Forbidden - user cannot delete this meme
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Forbidden! You do not have permissions to view or modify this resource"
+ *       404:
+ *         description: Meme not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Meme not found"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "An unexpected error occurred while deleting the meme"
+ */
+memeRouter.delete('/:id', authenticateToken, ensureUsersModifyOnlyTheirMemes, async (req, res, next) => {
+  try {
+    await MemeController.deleteMeme(req.params.id);
+    res.status(204).send(); // No content
   } catch (err) {
     next(err);
   }
