@@ -211,7 +211,7 @@ export class MemeController {
         UserId: userId
       });
 
-      return newMeme.toJSON(); //??? Works as expected?
+      return newMeme.toJSON(); 
     } catch (err) {
       // Remove meme saved in uploads/ by the multer middleware
       if (memeData.imageUrl) {
