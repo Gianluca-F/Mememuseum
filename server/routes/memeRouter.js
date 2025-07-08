@@ -201,14 +201,14 @@ memeRouter.get('/meme-of-the-day', async (req, res, next) => {
 
 /**
  * @swagger
- * /memes/{id}:
+ * /memes/{memeId}:
  *   get:
  *     summary: Get a single meme by ID
  *     description: Retrieve detailed information about a specific meme
  *     tags: [Memes]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: memeId
  *         required: true
  *         description: The ID of the meme
  *         schema:
@@ -320,9 +320,9 @@ memeRouter.get('/meme-of-the-day', async (req, res, next) => {
  *                   type: string
  *                   example: "An error occurred while retrieving the meme"
  */
-memeRouter.get('/:id', async (req, res, next) => {
+memeRouter.get('/:memeId', async (req, res, next) => {
   try {
-    const meme = await MemeController.getMemeById(req.params.id);
+    const meme = await MemeController.getMemeById(req.params.memeId);
     if (!meme) {
       throw { status: 404, message: 'Meme not found'}
     }
@@ -339,6 +339,8 @@ memeRouter.get('/:id', async (req, res, next) => {
  *     summary: Create a new meme
  *     description: Upload a new meme with title, description, tags, and image
  *     tags: [Memes]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -460,14 +462,16 @@ memeRouter.post('/', authenticateToken, uploader.single('image'), async (req, re
 
 /**
  * @swagger
- * /memes/{id}:
+ * /memes/{memeId}:
  *   put:
  *     summary: Update an existing meme
  *     description: Update the title, description, tags, and image of a meme
  *     tags: [Memes]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: memeId
  *         required: true
  *         description: The ID of the meme to update
  *         schema:
@@ -546,6 +550,16 @@ memeRouter.post('/', authenticateToken, uploader.single('image'), async (req, re
  *                 error:
  *                   type: string
  *                   example: "Missing user ID or meme ID"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Unauthorized"
  *       403:
  *         description: Forbidden
  *         content:
@@ -577,7 +591,7 @@ memeRouter.post('/', authenticateToken, uploader.single('image'), async (req, re
  *                   type: string
  *                   example: "An error occurred while updating the meme"
  */
-memeRouter.put('/:id', authenticateToken, ensureUsersModifyOnlyTheirMemes, uploader.single('image'), async (req, res, next) => {
+memeRouter.put('/:memeId', authenticateToken, ensureUsersModifyOnlyTheirMemes, uploader.single('image'), async (req, res, next) => {
   try {
     const memeData = {};
     if (req.body.title) {
@@ -592,7 +606,7 @@ memeRouter.put('/:id', authenticateToken, ensureUsersModifyOnlyTheirMemes, uploa
     if (req.file) { // Check if a new image file was uploaded
       memeData.imageUrl = `/uploads/${req.file.filename}`;
     }
-    const updatedMeme = await MemeController.updateMeme(req.params.id, memeData, req.user.id);
+    const updatedMeme = await MemeController.updateMeme(req.params.memeId, memeData, req.user.id);
     res.json(updatedMeme);
   } catch (err) {
     next(err);
@@ -601,14 +615,16 @@ memeRouter.put('/:id', authenticateToken, ensureUsersModifyOnlyTheirMemes, uploa
 
 /**
  * @swagger
- * /memes/{id}:
+ * /memes/{memeId}:
  *   delete:
  *     summary: Delete a meme
  *     description: Delete a meme by its ID. Only the meme owner can delete it.
  *     tags: [Memes]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: memeId
  *         required: true
  *         description: The ID of the meme to delete
  *         schema:
@@ -627,6 +643,16 @@ memeRouter.put('/:id', authenticateToken, ensureUsersModifyOnlyTheirMemes, uploa
  *                 error:
  *                   type: string
  *                   example: "Meme ID is required"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Unauthorized"
  *       403:
  *         description: Forbidden - user cannot delete this meme
  *         content:
@@ -658,9 +684,9 @@ memeRouter.put('/:id', authenticateToken, ensureUsersModifyOnlyTheirMemes, uploa
  *                   type: string
  *                   example: "An unexpected error occurred while deleting the meme"
  */
-memeRouter.delete('/:id', authenticateToken, ensureUsersModifyOnlyTheirMemes, async (req, res, next) => {
+memeRouter.delete('/:memeId', authenticateToken, ensureUsersModifyOnlyTheirMemes, async (req, res, next) => {
   try {
-    await MemeController.deleteMeme(req.params.id);
+    await MemeController.deleteMeme(req.params.memeId);
     res.status(204).send(); // No content
   } catch (err) {
     next(err);
@@ -669,7 +695,7 @@ memeRouter.delete('/:id', authenticateToken, ensureUsersModifyOnlyTheirMemes, as
 
 /**
  * @swagger
- * /memes/{id}/vote:
+ * /memes/{memeId}/vote:
  *   post:
  *     summary: Vote or toggle vote on a meme
  *     description: Allows an authenticated user to upvote or downvote a meme. 
@@ -680,7 +706,7 @@ memeRouter.delete('/:id', authenticateToken, ensureUsersModifyOnlyTheirMemes, as
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: memeId
  *         required: true
  *         description: The ID of the meme to vote on
  *         schema:
@@ -793,9 +819,9 @@ memeRouter.delete('/:id', authenticateToken, ensureUsersModifyOnlyTheirMemes, as
  *                   type: string
  *                   example: An error occurred while processing the vote
  */
-memeRouter.post('/:id/vote', authenticateToken, async (req, res, next) => {
+memeRouter.post('/:memeId/vote', authenticateToken, async (req, res, next) => {
   try {
-    const { meme, message } = await MemeController.voteMeme(req.params.id, req.body.type, req.user.id);
+    const { meme, message } = await MemeController.voteMeme(req.params.memeId, req.body.type, req.user.id);
     res.json({ meme, message });
   } catch (err) {
     next(err);

@@ -1,4 +1,3 @@
-// Import delle dipendenze usando import (non require)
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
@@ -13,6 +12,7 @@ import { memeRouter } from './routes/memeRouter.js';
 import { commentRouter } from './routes/commentRouter.js';
 import { apiDocsRouter } from './utils/swaggerUI.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import { authenticateToken } from './middlewares/authorization.js';
 
 // Configurazione dotenv per variabili ambiente
 dotenv.config();
@@ -25,9 +25,9 @@ app.use(morgan('dev'));
 
 // Middleware di sicurezza
 app.use(helmet());
-//app.use(xss()); // NOTE: commentato per swagger UI, da abilitare in produzione
+//app.use(xss()); // NOTE: commentato per Swagger UI, da abilitare in produzione
 app.use(cors());
-//app.use(csurf({ cookie: true })); // NOTE: commentato per evitare problemi con Swagger UI, da abilitare in produzione
+//app.use(csurf({ cookie: true })); // NOTE: commentato per Swagger UI, da abilitare in produzione
 
 // Middleware per il parsing
 app.use(cookieParser());
@@ -42,6 +42,8 @@ app.use(apiDocsRouter);
 // Definizione delle routes
 app.use('/auth', authenticationRouter);
 app.use('/memes', memeRouter);
+app.use(authenticateToken);
+app.use('/memes/:memeId/comments', commentRouter); // Autenticazione richiesta
 
 // Middleware per gestire gli errori
 app.use(errorHandler);

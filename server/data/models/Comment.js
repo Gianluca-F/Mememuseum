@@ -18,15 +18,19 @@ export function createModel(database) {
     hooks: {
 
       afterCreate: async (comment, options) => {
-        const { transaction } = options;
-        const meme = await Meme.findByPk(comment.MemeId);
-        await meme.increment('commentsCount', { transaction });
+        await Meme.increment('commentsCount', {
+          by: 1,
+          where: { id: comment.MemeId },
+          transaction: options.transaction
+        });
       },
 
       afterDestroy: async (comment, options) => {
-        const { transaction } = options;
-        const meme = await Meme.findByPk(comment.MemeId);
-        await meme.decrement('commentsCount', { transaction });
+        await Meme.decrement('commentsCount', {
+          by: 1,
+          where: { id: comment.MemeId },
+          transaction: options.transaction
+        });
       }
 
     }

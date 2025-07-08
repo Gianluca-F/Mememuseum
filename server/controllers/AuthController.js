@@ -73,6 +73,21 @@ export class AuthController {
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
   static async canUserModifyComment(userId, commentId) {
-    // TODO: Implement logic to check if the user can modify the comment
+    if (!userId || !commentId) {
+      throw { status: 400, message: 'Missing user ID or comment ID' };
+    }
+
+    const comment = await Comment.findByPk(commentId, {
+      attributes: ['UserId'],
+      raw: true,
+    });
+
+    if (!comment) {
+      throw { status: 404, message: 'Comment not found' };
+    }
+
+    if (comment.UserId !== userId) {
+      throw { status: 403, message: 'Forbidden! You do not have permissions to modify this comment' };
+    }
   }
 }
