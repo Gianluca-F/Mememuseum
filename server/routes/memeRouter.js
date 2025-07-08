@@ -1,6 +1,6 @@
 import express from 'express';
 import { MemeController } from '../controllers/MemeController.js';
-import { authenticateToken, ensureUsersModifyOnlyTheirMemes } from '../middlewares/authorizarion.js';
+import { authenticateToken, ensureUsersModifyOnlyTheirMemes } from '../middlewares/authorization.js';
 import { uploader } from '../middlewares/uploader.js';
 
 export const memeRouter = express.Router();
