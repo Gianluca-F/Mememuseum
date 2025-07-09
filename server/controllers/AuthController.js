@@ -17,7 +17,7 @@ export class AuthController {
     }
 
     // Compare provided password with hashed password in database
-    const isValidPassword = await bcrypt.compare(pwd, user.password);
+    const isValidPassword = await bcrypt.compare(password, user.password);
 
     if (!isValidPassword) {
       throw { status: 401, message: 'Invalid credentials' };
