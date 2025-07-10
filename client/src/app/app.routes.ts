@@ -4,7 +4,7 @@ import { LoginComponent } from './login/login';
 import { SignupComponent } from './signup/signup';
 
 import { LogoutComponent } from './logout/logout';
-//import { authGuard } from './_guards/auth/auth.guard';
+import { authGuard } from './_guards/auth/auth-guard';
 
 export const routes: Routes = [
   {
@@ -23,7 +23,7 @@ export const routes: Routes = [
     path: 'logout',
     component: LogoutComponent,
     title: 'Logout | Meme Museum',
-    //canActivate: [authGuard]
+    canActivate: [authGuard]
   }, {
     path: '**',
     redirectTo: '/home',
