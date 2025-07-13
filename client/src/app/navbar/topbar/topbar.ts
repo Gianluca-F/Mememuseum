@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../_services/auth/auth';
 import { SidebarService } from '../../_services/sidebar/sidebar';
 
 @Component({
   selector: 'app-topbar',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './topbar.html',
   styleUrls: ['./topbar.scss']
 })
