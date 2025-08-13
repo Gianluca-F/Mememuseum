@@ -21,13 +21,14 @@ export class SidebarService {
   
   openMobileSidebar() {
     this._isMobileSidebarOpen.set(true);
-  }
-  
+  } // NOTE: ! not actually used !
+
   closeMobileSidebar() {
     this._isMobileSidebarOpen.set(false);
   }
   
   // Metodi per gestire la sidebar desktop (opzionale)
+  // NOTE: ! not actually used these 3 !
   toggleDesktopSidebar() {
     this._isDesktopSidebarOpen.update(current => !current);
   }

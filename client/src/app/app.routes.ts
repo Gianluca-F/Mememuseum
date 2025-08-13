@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home';
+import { ExploreComponent } from './explore/explore';
+import { MemeComponent } from './meme/meme';
 import { LoginComponent } from './login/login';
 import { SignupComponent } from './signup/signup';
 
@@ -11,6 +13,14 @@ export const routes: Routes = [
     path: 'home',
     component: HomeComponent,
     title: 'Meme Museum'
+  }, {
+    path: 'explore',
+    component: ExploreComponent,
+    title: 'Explore | Meme Museum'
+  }, {
+    path: 'meme-of-the-day',
+    component: MemeComponent,
+    title: 'Meme of the Day | Meme Museum'
   }, {
     path: 'login',
     component: LoginComponent,
