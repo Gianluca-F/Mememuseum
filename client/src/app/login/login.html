@@ -1,1 +1,35 @@
-<p>login works!</p>
+<section class="dark:bg-gray-900 h-full">
+  <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto h-full">
+    <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+      <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+        <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+            Log In
+        </h1>
+        <form class="space-y-4 md:space-y-6" [formGroup]="loginForm" (ngSubmit)="handleLogin()">
+          <div>
+            <label for="user" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your username</label>
+            <input type="text" formControlName="user" id="user" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5" placeholder="Your username" required="">
+            @if(submitted && loginForm.controls.user.errors){
+              @if(loginForm.controls.user.errors['required']){
+                <p class="form-error">Username is required.</p>
+              }
+            }
+          </div>
+          <div>
+            <label for="pass" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+            <input type="password" formControlName="pass" id="pass" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5" required="">
+            @if(submitted && loginForm.controls.pass.errors){
+              @if(loginForm.controls.pass.errors['required']){
+                <p class="form-error">Password is required.</p>
+              }
+              @if(loginForm.controls.pass.errors['minlength']){
+                <p class="form-error">Password should contain at least 4 characters</p>
+              }
+            }
+          </div>
+          <button type="submit" class="w-full text-white bg-teal-700 hover:bg-teal-800 rounded-lg text-sm px-5 py-2.5 text-center">Log in</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

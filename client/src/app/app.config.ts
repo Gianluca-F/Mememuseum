@@ -1,25 +1,28 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
+import { provideHttpClient, withFetch, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
 
 import { routes } from './app.routes';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { authInterceptor } from './_services/api/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideAnimations(),
     provideToastr({
       progressBar: true,
       newestOnTop: true,
       preventDuplicates: true,
-      timeOut: 3500,
+      timeOut: 5500,
       closeButton: true,
-      positionClass: 'toast-top-center',
+      positionClass: 'toast-top-right',
+      toastClass: 'ngx-toastr custom-toastr-dimensions',
     }),
-    provideHttpClient(withFetch()),
+    provideHttpClient(
+      withFetch(), //use the Fetch API instead of XMLHttpRequests
+      withInterceptors([authInterceptor])
+    ),
     provideRouter(routes),
   ]
 };

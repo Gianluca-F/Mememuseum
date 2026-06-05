@@ -9,20 +9,62 @@
 
 .toast-success {
   background-color: #0fc396;
+  color: white;
+  border-left: 4px solid #0f766e;
 }
+
 .toast-error {
-  background-color: #BD362F;
+  background-color: #ef4444;
+  color: white;
+  border-left: 4px solid #b91c1c;
 }
 .toast-info {
   background-color: #2F96B4;
+  color: white;
+  border-left: 4px solid #0e7490;
 }
 .toast-warning {
-  background-color: #F89406;
+  background-color: #f59e0b;
+  color: white;
+  border-left: 4px solid #b45309;
+}
+
+.dark {
+  .toast-success {
+    background-color: #134e4a; 
+    color: #99f6e4;            
+    border-left: 4px solid #2dd4bf; 
+  }
+
+  .toast-error {
+    background-color: #781717; 
+    color: #fecaca;            
+    border-left: 4px solid #f87171; 
+  }
+
+  .toast-info {
+    background-color: #083344; 
+    color: #a5f3fc;            
+    border-left: 4px solid #22d3ee; 
+  }
+
+  .toast-warning {
+    background-color: #451a03; 
+    color: #fde68a;            
+    border-left: 4px solid #fbbf24;
+  }
 }
 
 .toast-top-center {
   top: 3rem !important;
 }
+
+.custom-toastr-dimensions {
+  width: 360px !important;       /* Set your exact width */
+  min-height: 80px !important;   /* Set a minimum height */
+  max-width: 90vw !important;    /* Ensures it scales down on smaller viewports */
+}
+
 
 a.link {
   @apply underline text-teal-600 dark:text-teal-400 hover:text-teal-700 visited:text-teal-800 dark:visited:text-amber-400

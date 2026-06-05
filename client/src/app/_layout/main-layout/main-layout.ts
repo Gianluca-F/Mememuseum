@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { SidebarService } from '../../_services/sidebar/sidebar';
+import { SidebarService } from '../../_services/sidebar/sidebar.service';
 import { TopbarComponent } from '../../navbar/topbar/topbar';
 import { SidebarComponent } from '../../navbar/sidebar/sidebar';
 

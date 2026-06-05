@@ -7,7 +7,7 @@ export class SidebarService {
   // Signal per lo stato della sidebar mobile
   private _isMobileSidebarOpen = signal(false);
   
-  // Signal per lo stato della sidebar desktop (opzionale se vuoi renderla collassabile)
+  // Signal per lo stato della sidebar desktop (opzionale)
   private _isDesktopSidebarOpen = signal(true);
   
   // Getter pubblici per i signals

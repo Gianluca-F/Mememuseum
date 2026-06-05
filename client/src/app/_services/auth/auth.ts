@@ -52,15 +52,15 @@ export class AuthService {
     })
   }
 
-  getUserId() {
+  getUserId(): string | null {
     return localStorage.getItem("userId");
   }
 
-  getUserName() {
+  getUserName(): string | null {
     return localStorage.getItem("userName");
   }
 
-  getToken() {
+  getToken(): string | null {
     return localStorage.getItem("token");
   }
 
