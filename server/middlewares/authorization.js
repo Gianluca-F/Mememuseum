@@ -6,12 +6,12 @@ export function authenticateToken(req, res, next) {
   const token = authHeader?.split(' ')[1];
 
   if (!token) {
-    throw { status: 401, message: 'Unauthorized' };
+    return next({ status: 401, message: 'Unauthorized' });
   }
 
   isTokenValid(token, (err, user) => {
     if (err) {
-      throw { status: 401, message: 'Unauthorized' };
+      return next({ status: 401, message: 'Unauthorized' });
     }
     req.user = user;
     next();
@@ -19,8 +19,12 @@ export function authenticateToken(req, res, next) {
 }
 
 export async function ensureUsersModifyOnlyTheirMemes(req, res, next) {
-  const userId = req.user.id;
+  const userId = req.user?.id;
   const memeId = req.params.memeId;
+
+  if (!userId) {
+    return next({ status: 401, message: 'Unauthorized' });
+  }
 
   try {
     await AuthController.canUserModifyMeme(userId, memeId); // Throws an error if the user cannot modify the meme
@@ -31,8 +35,12 @@ export async function ensureUsersModifyOnlyTheirMemes(req, res, next) {
 }
 
 export async function ensureUsersModifyOnlyTheirComments(req, res, next) {
-  const userId = req.user.id;
+  const userId = req.user?.id;
   const commentId = req.params.commentId;
+
+  if (!userId) {
+    return next({ status: 401, message: 'Unauthorized' });
+  }
 
   try {
     await AuthController.canUserModifyComment(userId, commentId); // Throws an error if the user cannot modify the comment

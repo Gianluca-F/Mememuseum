@@ -11,6 +11,48 @@ export const memeRouter = express.Router();
  *   get:
  *     summary: Get all memes
  *     description: Retrieve a list of all memes with optional filters and pagination
+ *     parameters:
+ *       - in: query
+ *         name: title
+ *         schema:
+ *           type: string
+ *         description: Filter memes by title substring
+ *       - in: query
+ *         name: tags
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of tags
+ *       - in: query
+ *         name: match
+ *         schema:
+ *           type: string
+ *           enum: [any, all]
+ *         description: Match any tag or all tags
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 50
+ *         description: Maximum memes per page
+ *       - in: query
+ *         name: sortedBy
+ *         schema:
+ *           type: string
+ *           enum: [createdAt, upvotes, downvotes, commentsCount]
+ *         description: Sort field
+ *       - in: query
+ *         name: sortDirection
+ *         schema:
+ *           type: string
+ *           enum: [ASC, DESC]
+ *         description: Sort direction
  *     tags: [Memes]
  *     responses:
  *       200:
@@ -447,11 +489,15 @@ memeRouter.get('/:memeId', async (req, res, next) => {
  */
 memeRouter.post('/', authenticateToken, uploader.single('image'), async (req, res, next) => {
   try {
+    if (!req.file) {
+      throw { status: 400, message: 'Image is required' };
+    }
+
     const memeData = {
       title: req.body.title,
       description: req.body.description,
       tags: req.body.tags,
-      imageUrl: `/uploads/${req.file.filename}`
+      imageUrl: `uploads/${req.file.filename}`
     };
     const newMeme = await MemeController.createMeme(memeData, req.user.id);
     res.status(201).json(newMeme);

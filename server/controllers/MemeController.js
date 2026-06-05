@@ -251,19 +251,20 @@ export class MemeController {
 
     try {
 
-      // If the imageUrl is updated, delete the old image file
-      if (memeData.imageUrl && meme.imageUrl) {
-        const oldPath = path.join(process.cwd(), meme.imageUrl);
-        try {
-          await fs.unlink(oldPath);
-        } catch (fsErr) {
-          console.error(`Failed to delete file ${oldPath}:`, fsErr);
-        }
-      }
+      const previousImagePath = meme.imageUrl ? path.join(process.cwd(), meme.imageUrl) : null;
 
       // Update the meme
       meme.set(memeData);
       await meme.save();
+
+      // Delete the old image after the database update succeeds
+      if (previousImagePath) {
+        try {
+          await fs.unlink(previousImagePath);
+        } catch (fsErr) {
+          console.error(`Failed to delete file ${previousImagePath}:`, fsErr);
+        }
+      }
 
       return meme.toJSON();
     } catch (err) {
@@ -296,6 +297,8 @@ export class MemeController {
     }
 
     // Delete the image file associated with the meme
+    await meme.destroy();
+
     if (meme.imageUrl) {
       const filePath = path.join(process.cwd(), meme.imageUrl);
       try {
@@ -304,8 +307,6 @@ export class MemeController {
         console.error(`Failed to delete file ${filePath}:`, fsErr);
       }
     }
-
-    await meme.destroy();
   }
 
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -317,17 +318,17 @@ export class MemeController {
 
     const transaction = await database.transaction();
 
-    const meme = await Meme.findByPk(memeId, { transaction });
-    if (!meme) {
-      throw { status: 404, message: 'Meme not found' };
-    }
-
-    const existingVote = await Vote.findOne({
-      where: { MemeId: memeId, UserId: userId },
-      transaction
-    });
-
     try {
+      const meme = await Meme.findByPk(memeId, { transaction });
+      if (!meme) {
+        throw { status: 404, message: 'Meme not found' };
+      }
+
+      const existingVote = await Vote.findOne({
+        where: { MemeId: memeId, UserId: userId },
+        transaction
+      });
+
       let message;
       if (!existingVote) {
         await Vote.create({ type, MemeId: memeId, UserId: userId }, { transaction });
@@ -345,7 +346,7 @@ export class MemeController {
       return { meme: await meme.reload(), message };
 
     } catch (err) {
-      await transaction.rollback();
+      await transaction.rollback().catch(() => {});
 
       if (err.name === 'SequelizeValidationError') {
         throw { status: 400, message: 'Invalid vote data' };
