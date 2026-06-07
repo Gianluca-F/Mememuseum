@@ -15,7 +15,7 @@ import { AuthBackendService } from '../_services/auth/auth-backend';
 export class LoginComponent {
   toastr = inject(ToastrService);
   router = inject(Router);
-  authRestService = inject(AuthBackendService);
+  authBackendService = inject(AuthBackendService);
   authService = inject(AuthService);
   submitted = false;
   loginForm = new FormGroup({
@@ -31,7 +31,7 @@ export class LoginComponent {
     if(this.loginForm.invalid){
       this.toastr.error("The data you provided is invalid!", "Oops! Invalid data!");
     } else {
-      this.authRestService.login(
+      this.authBackendService.login(
         this.loginForm.value.user as string,
         this.loginForm.value.pass as string,
       ).subscribe({
