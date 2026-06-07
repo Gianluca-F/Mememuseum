@@ -11,9 +11,7 @@
     
     <!-- Desktop Sidebar -->
     <app-sidebar 
-      class="flex-shrink-0 hidden lg:block overflow-y-auto"
-      [class.w-64]="sidebarService.isDesktopSidebarOpen()"
-      [class.w-16]="!sidebarService.isDesktopSidebarOpen()"
+      class="flex-shrink-0 w-64 hidden lg:block overflow-y-auto"
     ></app-sidebar>
   </div>
   
@@ -21,14 +19,14 @@
   @if (sidebarService.isMobileSidebarOpen()) {
     <div 
       class="fixed inset-0 backdrop-blur-sm bg-white/30 dark:bg-gray-900/30 z-40 lg:hidden"
-      (click)="onOverlayClick()"
+      (click)="this.sidebarService.closeMobileSidebar()"
     ></div>
   }
   
   <!-- Mobile Sidebar -->
   <app-sidebar 
     class="fixed inset-y-0 right-0 z-50 w-64 lg:hidden transform transition-transform duration-300 ease-in-out"
-    [class.translate-x-0]="sidebarService.isMobileSidebarOpen()"
-    [class.translate-x-full]="!sidebarService.isMobileSidebarOpen()"
+    [class.translate-x-0]="this.sidebarService.isMobileSidebarOpen()"
+    [class.translate-x-full]="!this.sidebarService.isMobileSidebarOpen()"
   ></app-sidebar>
 </div>

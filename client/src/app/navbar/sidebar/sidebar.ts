@@ -10,21 +10,6 @@ import { SidebarService } from '../../_services/sidebar/sidebar.service';
   styleUrls: ['./sidebar.scss']
 })
 export class SidebarComponent {
-  sidebarOpen = false; /* NOTE: ! not actually used */
   sidebarService = inject(SidebarService);
-
-  toggleSidebar() {
-    this.sidebarOpen = !this.sidebarOpen;
-  } /* NOTE: ! not actually used ! */
-
-  // Metodo per chiudere la sidebar quando si clicca su un link (utile per mobile)
-  onLinkClick() {
-    this.sidebarService.closeMobileSidebar();
-  }
-  
-  // Metodo per chiudere la sidebar
-  closeSidebar() {
-    this.sidebarService.closeMobileSidebar();
-  }
 
 }

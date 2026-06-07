@@ -10,20 +10,6 @@ import { SidebarComponent } from '../../navbar/sidebar/sidebar';
   styleUrls: ['./main-layout.scss']
 })
 export class MainLayoutComponent {
-
-  sidebarOpen = false;
   sidebarService = inject(SidebarService);
- 
-  toggleSidebar() {
-    this.sidebarOpen = !this.sidebarOpen;
-  }
-
-  closeSidebar() {
-    this.sidebarOpen = false;
-  }
-
-  onOverlayClick() {
-    this.sidebarService.closeMobileSidebar();
-  }
   
 }

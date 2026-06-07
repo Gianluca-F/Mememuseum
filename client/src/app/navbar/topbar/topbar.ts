@@ -14,20 +14,4 @@ import { DarkModeToggleComponent } from './dark-mode-toggle/dark-mode-toggle';
 export class TopbarComponent {
   authService = inject(AuthService);
   sidebarService = inject(SidebarService);
-
-  toggleSidebar() {
-    this.sidebarService.toggleDesktopSidebar();
-  } /* NOTE: ! not actually used ! */
-
-  toggleMobileSidebar() {
-    this.sidebarService.toggleMobileSidebar();
-  }
-
-  closeSidebar() {
-    this.sidebarService.closeMobileSidebar();
-  } /* NOTE: ! not actually used ! */
-
-  logout() {
-    this.authService.logout();
-  }
 }
