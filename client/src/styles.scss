@@ -7,6 +7,11 @@
 @tailwind utilities;
 @custom-variant dark (&:where(.dark, .dark *));
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 .toast-success {
   background-color: #0fc396;
   color: white;
@@ -49,7 +54,7 @@
   }
 
   .toast-warning {
-    background-color: #451a03; 
+    background-color: #a7572c; 
     color: #fde68a;            
     border-left: 4px solid #fbbf24;
   }

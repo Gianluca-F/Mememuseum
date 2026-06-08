@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SidebarService } from '../../_services/sidebar/sidebar.service';
+import { AuthService } from '../../_services/auth/auth';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,5 +12,6 @@ import { SidebarService } from '../../_services/sidebar/sidebar.service';
 })
 export class SidebarComponent {
   sidebarService = inject(SidebarService);
+  authService = inject(AuthService);
 
 }

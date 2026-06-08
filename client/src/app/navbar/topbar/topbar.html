@@ -30,30 +30,48 @@
       <!-- Auth Buttons -->
       @if(!this.authService.isUserAuthenticated()) {
         <div class="flex items-center space-x-2">
-          <a 
-            routerLink="/login" 
-            class="px-4 py-2 text-sm font-medium text-teal-600 hover:text-teal-700 dark:text-teal-400 cursor-pointer hover:bg-teal-50 dark:hover:bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+          <a
+            routerLink="/login"
+            class="px-4 py-1.5 text-sm font-semibold text-white bg-teal-600 border border-teal-600 rounded-full hover:bg-teal-700 hover:border-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer hover:text-white dark:bg-teal-500 dark:border-teal-500 dark:hover:bg-teal-600 dark:focus:ring-teal-700"
           >
-            Login
+            Log In
           </a>
-          <a 
-            routerLink="/signup" 
-            class="px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer hover:text-white dark:bg-teal-500 dark:hover:bg-teal-600 dark:focus:ring-teal-700"
+          <a
+            routerLink="/signup"
+            class="px-4 py-1.5 text-sm font-semibold text-teal-600 dark:text-teal-400 border border-teal-600 dark:border-teal-400 rounded-full hover:bg-teal-50 dark:hover:bg-gray-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             Sign Up
           </a>
         </div>
       } @else {
-        <div class="flex items-center space-x-2">
-          <span class="hidden sm:inline text-sm text-gray-700 dark:text-gray-300">
-            {{this.authService.userName()}}
-          </span>
-          <button 
-            (click)="this.authService.logout()" 
-            class="px-3 py-1 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        <div class="relative" #userMenuContainer>
+          <button
+            type="button"
+            (click)="this.toggleUserMenu()"
+            class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
-            Logout
+            <span class="flex items-center justify-center w-7 h-7 rounded-full bg-teal-600 dark:bg-teal-500 text-white text-xs font-semibold">
+              {{this.userInitial()}}
+            </span>
+            <strong class="hidden sm:inline">
+              {{this.authService.userName()}}
+            </strong>
+            <svg class="hidden sm:block w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
           </button>
+
+          @if(this.isUserMenuOpen()) {
+            <div class="absolute right-0 mt-2 w-40 py-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden z-50">
+              <a
+                routerLink="/logout"
+                (click)="this.isUserMenuOpen.set(false)"
+                class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+              >
+                Logout
+              </a>
+            </div>
+          }
         </div>
       }
 

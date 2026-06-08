@@ -1,1 +1,132 @@
-<p>meme works!</p>
+<div class="max-w-4xl mx-auto px-4 py-8">
+
+  @if (isLoading()) {
+    <div class="animate-pulse space-y-4">
+      <div class="h-96 bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+      <div class="h-6 bg-gray-200 dark:bg-gray-800 rounded w-1/2"></div>
+      <div class="h-4 bg-gray-200 dark:bg-gray-800 rounded w-full"></div>
+      <div class="h-4 bg-gray-200 dark:bg-gray-800 rounded w-2/3"></div>
+    </div>
+  } @else if (loadError() || !meme()) {
+    <div class="text-center py-16">
+      <p class="text-lg text-gray-500 dark:text-gray-400">Impossibile trovare questo meme.</p>
+      <a routerLink="/explore" class="link mt-4 inline-block">Torna all'esplorazione</a>
+    </div>
+  } @else {
+    <article class="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
+      <!-- Image -->
+      <div class="bg-gray-100 dark:bg-gray-900/60 flex items-center justify-center">
+        <img
+          [src]="imageUrl(meme()!.imageUrl)"
+          [alt]="meme()!.title"
+          class="max-h-[32rem] w-full object-contain"
+        >
+      </div>
+
+      <div class="p-6 space-y-4">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ meme()!.title }}</h1>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            Caricato da <span class="font-medium text-gray-700 dark:text-gray-300">{{ meme()!.user.userName }}</span>
+            · {{ meme()!.createdAt | date:'dd/MM/yyyy' }}
+          </p>
+        </div>
+
+        <p class="text-gray-700 dark:text-gray-300 whitespace-pre-line break-words">{{ meme()!.description }}</p>
+
+        @if (meme()!.tags?.length) {
+          <div class="flex flex-wrap gap-2">
+            @for (tag of meme()!.tags; track tag) {
+              <span class="px-2.5 py-1 text-xs font-medium rounded-full bg-teal-100 text-teal-700 dark:bg-teal-900 dark:text-teal-300">
+                #{{ tag }}
+              </span>
+            }
+          </div>
+        }
+
+        <!-- Votes -->
+        <div class="flex items-center gap-3 pt-2">
+          <button
+            type="button"
+            (click)="vote('upvote')"
+            [disabled]="isVoting()"
+            class="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-teal-50 dark:hover:bg-gray-700 disabled:opacity-50 cursor-pointer transition-colors"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+            </svg>
+            <span>{{ meme()!.upvotes }}</span>
+          </button>
+          <button
+            type="button"
+            (click)="vote('downvote')"
+            [disabled]="isVoting()"
+            class="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-gray-700 disabled:opacity-50 cursor-pointer transition-colors"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+            <span>{{ meme()!.downvotes }}</span>
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <!-- Comments -->
+    <section class="mt-8">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        Commenti ({{ meme()!.commentsCount }})
+      </h2>
+
+      @if (authService.isUserAuthenticated()) {
+        <form [formGroup]="commentForm" (ngSubmit)="submitComment()" class="mb-6">
+          <label for="content" class="sr-only">Scrivi un commento</label>
+          <textarea
+            id="content"
+            formControlName="content"
+            rows="3"
+            placeholder="Scrivi un commento..."
+            class="w-full bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          ></textarea>
+          @if (submitted && commentForm.controls.content.errors) {
+            @if (commentForm.controls.content.errors['required']) {
+              <p class="form-error">Il commento non può essere vuoto.</p>
+            }
+            @if (commentForm.controls.content.errors['maxlength']) {
+              <p class="form-error">Il commento può contenere al massimo 500 caratteri.</p>
+            }
+          }
+          <div class="mt-2 flex justify-end">
+            <button
+              type="submit"
+              [disabled]="isCommenting()"
+              class="px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 disabled:opacity-50 cursor-pointer"
+            >
+              Pubblica
+            </button>
+          </div>
+        </form>
+      } @else {
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+          <a routerLink="/login" class="link">Accedi</a> per lasciare un commento.
+        </p>
+      }
+
+      @if (meme()!.comments.length) {
+        <ul class="space-y-4">
+          @for (comment of meme()!.comments; track comment.id) {
+            <li class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+              <div class="flex items-center justify-between">
+                <span class="font-medium text-gray-900 dark:text-white">{{ comment.user.userName }}</span>
+                <span class="text-xs text-gray-500 dark:text-gray-400">{{ comment.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+              <p class="mt-1 text-gray-700 dark:text-gray-300">{{ comment.content }}</p>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="text-sm text-gray-500 dark:text-gray-400">Nessun commento ancora. Sii il primo a commentare!</p>
+      }
+    </section>
+  }
+</div>

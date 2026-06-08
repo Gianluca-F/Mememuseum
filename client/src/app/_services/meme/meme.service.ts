@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { MemeList, MemeDetail, PaginatedResponse, Comment } from '../../_models/api.models';
 import { HttpClient } from '@angular/common/http';
 
@@ -20,35 +20,39 @@ export class MemeService {
     return this.http.get<PaginatedResponse<MemeList>>(`${this.API_URL}${this.BASE_PATH}?page=${page}&limit=${limit}`);
   }
 
+  getMemeOfTheDay() {
+    return this.http.get<MemeDetail>(`${this.API_URL}${this.BASE_PATH}/meme-of-the-day`);
+  }
+
   getMemeById(id: string) {
     return this.http.get<MemeDetail>(`${this.API_URL}${this.BASE_PATH}/${id}`);
   }
 
-  createMeme(meme: Partial<MemeList>) {
-    return this.http.post<MemeList>(`${this.API_URL}${this.BASE_PATH}`, meme);
+  createMeme(meme: FormData) {
+    return this.http.post<MemeDetail>(`${this.API_URL}${this.BASE_PATH}`, meme);
   }
 
-  updateMeme(id: string, updates: Partial<MemeList>) {
-    return this.http.put<MemeList>(`${this.API_URL}${this.BASE_PATH}/${id}`, updates);
+  updateMeme(id: string, updates: FormData) {
+    return this.http.put<MemeDetail>(`${this.API_URL}${this.BASE_PATH}/${id}`, updates);
   }
 
   deleteMeme(id: string) {
     return this.http.delete(`${this.API_URL}${this.BASE_PATH}/${id}`);
   }
 
-  voteMeme(memeId: string, voteType: 'up' | 'down') {
-    return this.http.post(`${this.API_URL}${this.BASE_PATH}/${memeId}/vote`, { voteType });
-  }
-
-  getComments(memeId: string) {
-    return this.http.get<Comment[]>(`${this.API_URL}${this.BASE_PATH}/${memeId}/comments`);
+  voteMeme(memeId: string, type: 'upvote' | 'downvote') {
+    return this.http.post<{ meme: MemeDetail, message: string }>(`${this.API_URL}${this.BASE_PATH}/${memeId}/vote`, { type });
   }
 
   addComment(memeId: string, content: string) {
-    return this.http.post<Comment>(`${this.API_URL}${this.BASE_PATH}/${memeId}/comments`, { content });
+    return this.http.post<{ comment: Comment, message: string }>(`${this.API_URL}${this.BASE_PATH}/${memeId}/comments`, { content });
   }
 
   deleteComment(memeId: string, commentId: string) {
     return this.http.delete(`${this.API_URL}${this.BASE_PATH}/${memeId}/comments/${commentId}`);
+  }
+
+  getImageUrl(imageUrl: string) {
+    return `${this.API_URL}/${imageUrl}`;
   }
 }
