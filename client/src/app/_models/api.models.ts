@@ -73,6 +73,7 @@ export interface MemeList {
  */
 export interface MemeDetail extends MemeList {
   comments: Comment[];
+  userVote: 'upvote' | 'downvote' | null;
 }
 
 /**

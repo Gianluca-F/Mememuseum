@@ -41,7 +41,7 @@ export class MemeService {
   }
 
   voteMeme(memeId: string, type: 'upvote' | 'downvote') {
-    return this.http.post<{ meme: MemeDetail, message: string }>(`${this.API_URL}${this.BASE_PATH}/${memeId}/vote`, { type });
+    return this.http.post<{ meme: MemeDetail }>(`${this.API_URL}${this.BASE_PATH}/${memeId}/vote`, { type });
   }
 
   addComment(memeId: string, content: string) {

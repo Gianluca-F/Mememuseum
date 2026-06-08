@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { MemeService } from '../_services/meme/meme.service';
@@ -10,7 +10,7 @@ import { MemeDetail } from '../_models/api.models';
 @Component({
   selector: 'app-meme',
   standalone: true,
-  imports: [RouterLink, DatePipe, ReactiveFormsModule],
+  imports: [RouterLink, DatePipe, NgClass, ReactiveFormsModule],
   templateUrl: './meme.html',
   styleUrls: ['./meme.scss']
 })
@@ -52,7 +52,7 @@ export class MemeComponent implements OnInit {
     this.isVoting.set(true);
     this.memeService.voteMeme(meme.id, type).subscribe({
       next: ({ meme: updated }) => {
-        this.meme.set({ ...meme, upvotes: updated.upvotes, downvotes: updated.downvotes });
+        this.meme.set({ ...meme, upvotes: updated.upvotes, downvotes: updated.downvotes, userVote: updated.userVote });
         this.isVoting.set(false);
       },
       error: () => {
