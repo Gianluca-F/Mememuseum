@@ -22,7 +22,10 @@ const PORT = process.env.PORT || 3000;
 app.use(morgan('dev'));
 
 // Middleware di sicurezza
-app.use(helmet());
+// Le immagini servite da /uploads devono poter essere caricate dal frontend Angular, che gira su un'origine diversa
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' }
+}));
 app.use(cors());
 
 // Middleware per il parsing del corpo delle richieste JSON

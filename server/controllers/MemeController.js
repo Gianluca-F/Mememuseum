@@ -117,7 +117,6 @@ export class MemeController {
       throw { status: 404, message: "Meme not found" };
     }
 
-    /*
     const formattedComments = meme.Comments?.map(comment => ({
       id: comment.id,
       content: comment.content,
@@ -144,8 +143,6 @@ export class MemeController {
       },
       comments: formattedComments
     };
-    */
-    return meme.toJSON(); //??? Works as expected?
   }
 
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
