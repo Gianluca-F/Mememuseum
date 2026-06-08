@@ -1,6 +1,6 @@
 import express from 'express';
 import { MemeController } from '../controllers/MemeController.js';
-import { authenticateToken, ensureUsersModifyOnlyTheirMemes } from '../middlewares/authorization.js';
+import { authenticateToken, optionalAuthenticateToken, ensureUsersModifyOnlyTheirMemes } from '../middlewares/authorization.js';
 import { uploader } from '../middlewares/uploader.js';
 
 export const memeRouter = express.Router();
@@ -228,10 +228,10 @@ memeRouter.get('/', async (req, res, next) => {
  *                   type: string
  *                   example: "An error occurred while retrieving the meme of the day"
  */
-memeRouter.get('/meme-of-the-day', async (req, res, next) => {
+memeRouter.get('/meme-of-the-day', optionalAuthenticateToken, async (req, res, next) => {
   try {
     const memeOfTheDayId = await MemeController.getMemeOfTheDay();
-    const meme = await MemeController.getMemeById(memeOfTheDayId);
+    const meme = await MemeController.getMemeById(memeOfTheDayId, req.user?.id);
     if (!meme) {
       throw { status: 404, message: 'Meme of the day not found' };
     }
@@ -362,9 +362,9 @@ memeRouter.get('/meme-of-the-day', async (req, res, next) => {
  *                   type: string
  *                   example: "An error occurred while retrieving the meme"
  */
-memeRouter.get('/:memeId', async (req, res, next) => {
+memeRouter.get('/:memeId', optionalAuthenticateToken, async (req, res, next) => {
   try {
-    const meme = await MemeController.getMemeById(req.params.memeId);
+    const meme = await MemeController.getMemeById(req.params.memeId, req.user?.id);
     if (!meme) {
       throw { status: 404, message: 'Meme not found'}
     }
@@ -867,8 +867,8 @@ memeRouter.delete('/:memeId', authenticateToken, ensureUsersModifyOnlyTheirMemes
  */
 memeRouter.post('/:memeId/vote', authenticateToken, async (req, res, next) => {
   try {
-    const { meme, message } = await MemeController.voteMeme(req.params.memeId, req.body.type, req.user.id);
-    res.json({ meme, message });
+    const { meme } = await MemeController.voteMeme(req.params.memeId, req.body.type, req.user.id);
+    res.json({ meme });
   } catch (err) {
     next(err);
   }

@@ -1,6 +1,28 @@
 import { AuthController } from '../controllers/AuthController.js';
 import { isTokenValid } from '../utils/JwtUtils.js';
 
+/**
+ * Middleware to optionally authenticate the user if a token is provided
+ * Useful for routes that can be accessed by both authenticated and unauthenticated users
+ * If a valid token is provided, the user information will be attached to req.user
+ * Used for retrieveing voteMemes
+ */
+export function optionalAuthenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader?.split(' ')[1];
+
+  if (!token) {
+    return next();
+  }
+
+  isTokenValid(token, (err, user) => {
+    if (!err) {
+      req.user = user;
+    }
+    next();
+  });
+}
+
 export function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader?.split(' ')[1];

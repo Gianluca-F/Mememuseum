@@ -87,7 +87,7 @@ export class MemeController {
 
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-  static async getMemeById(id) {
+  static async getMemeById(id, userId = null) {
     if (!id) {
       throw { status: 400, message: "Meme ID is required" };
     }
@@ -127,6 +127,12 @@ export class MemeController {
       }
     }));
 
+    let userVote = null;
+    if (userId) {
+      const vote = await Vote.findOne({ where: { MemeId: id, UserId: userId } });
+      userVote = vote ? vote.type : null;
+    }
+
     return {
       id: meme.id,
       title: meme.title,
@@ -141,7 +147,8 @@ export class MemeController {
         id: meme.User.id,
         userName: meme.User.userName,
       },
-      comments: formattedComments
+      comments: formattedComments,
+      userVote,
     };
   }
 
@@ -326,21 +333,22 @@ export class MemeController {
         transaction
       });
 
-      let message;
+      let userVote;
       if (!existingVote) {
         await Vote.create({ type, MemeId: memeId, UserId: userId }, { transaction });
-        message = `Vote recorded as ${type}`;
+        userVote = type;
       } else if (existingVote.type === type) {
         await existingVote.destroy({ transaction });
-        message = `Vote removed`;
+        userVote = null;
       } else {
         existingVote.type = type;
         await existingVote.save({ transaction });
-        message = `Vote updated to ${type}`;
+        userVote = type;
       }
 
       await transaction.commit();
-      return { meme: await meme.reload(), message };
+      const reloaded = await meme.reload();
+      return { meme: { ...reloaded.toJSON(), userVote } };
 
     } catch (err) {
       await transaction.rollback().catch(() => {});
