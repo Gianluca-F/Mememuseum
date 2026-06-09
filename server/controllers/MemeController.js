@@ -185,9 +185,18 @@ export class MemeController {
       throw { status: 404, message: "No memes available to select as meme of the day" };
     }
 
-    // Choose a random meme
-    const randomIndex = Math.floor(Math.random() * memes.length);
-    const memeId = memes[randomIndex].id;
+    // Exclude memes that have ever been meme of the day before
+    const allMotd = await MemeOfTheDay.findAll();
+    const usedIds = new Set(allMotd.map((m) => m.MemeId));
+
+    const candidates = memes.filter((m) => !usedIds.has(m.id));
+    const pool = candidates.length > 0 ? candidates : memes; // fallback: reset if all have been used
+
+    // Choose the meme with the highest net score (upvotes - downvotes)
+    const best = pool.reduce((top, meme) =>
+      (meme.upvotes - meme.downvotes) > (top.upvotes - top.downvotes) ? meme : top
+    );
+    const memeId = best.id;
 
     // Save the meme of the day in the caching table
     await MemeOfTheDay.create({
