@@ -643,14 +643,14 @@ memeRouter.put('/:memeId', authenticateToken, ensureUsersModifyOnlyTheirMemes, u
     if (req.body.title) {
       memeData.title = req.body.title;
     }
-    if (req.body.description) {
+    if (req.body.description !== undefined) { // Allow empty string for description
       memeData.description = req.body.description;
     }
-    if (req.body.tags) {
+    if (req.body.tags !== undefined) { // Allow empty string for tags
       memeData.tags = req.body.tags;
     }
     if (req.file) { // Check if a new image file was uploaded
-      memeData.imageUrl = `/uploads/${req.file.filename}`;
+      memeData.imageUrl = `uploads/${req.file.filename}`;
     }
     const updatedMeme = await MemeController.updateMeme(req.params.memeId, memeData, req.user.id);
     res.json(updatedMeme);

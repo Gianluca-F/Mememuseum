@@ -245,8 +245,8 @@ export class MemeController {
 
     // Trim and normalize meme data
     if (memeData.title) memeData.title = memeData.title.trim();
-    if (memeData.description) memeData.description = memeData.description.trim();
-    if (memeData.tags) memeData.tags = normalizeTags(memeData.tags);
+    if (memeData.description !== undefined) memeData.description = memeData.description.trim() || null;
+    if (memeData.tags !== undefined) memeData.tags = normalizeTags(memeData.tags);
     
     const meme = await Meme.findByPk(memeId);
     if (!meme) {
@@ -255,7 +255,9 @@ export class MemeController {
 
     try {
 
-      const previousImagePath = meme.imageUrl ? path.join(process.cwd(), meme.imageUrl) : null;
+      const previousImagePath = (memeData.imageUrl && meme.imageUrl)
+        ? path.join(process.cwd(), meme.imageUrl)
+        : null;
 
       // Update the meme
       meme.set(memeData);
