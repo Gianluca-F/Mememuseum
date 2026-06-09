@@ -1,0 +1,117 @@
+<section class="dark:bg-gray-900 min-h-full">
+  <div class="flex flex-col items-center px-6 py-8 mx-auto max-w-2xl">
+
+    @if (isLoading()) {
+      <div class="w-full space-y-4 animate-pulse mt-8">
+        <div class="h-10 bg-gray-200 dark:bg-gray-800 rounded-lg"></div>
+        <div class="h-24 bg-gray-200 dark:bg-gray-800 rounded-lg"></div>
+        <div class="h-10 bg-gray-200 dark:bg-gray-800 rounded-lg"></div>
+        <div class="h-48 bg-gray-200 dark:bg-gray-800 rounded-lg"></div>
+      </div>
+    } @else if (loadError()) {
+      <div class="text-center py-16">
+        <p class="text-lg text-gray-500 dark:text-gray-400">Impossibile caricare i dati del meme.</p>
+        <a routerLink="/explore" class="link mt-4 inline-block">Torna all'esplorazione</a>
+      </div>
+    } @else {
+      <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+          <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+            Modifica meme
+          </h1>
+
+          <form class="space-y-4 md:space-y-6" [formGroup]="editForm" (ngSubmit)="handleEdit()">
+
+            <div>
+              <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Titolo</label>
+              <input
+                type="text"
+                formControlName="title"
+                id="title"
+                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              >
+              @if (submitted && editForm.controls.title.errors) {
+                @if (editForm.controls.title.errors['required']) {
+                  <p class="form-error">Il titolo è obbligatorio.</p>
+                }
+                @if (editForm.controls.title.errors['maxlength']) {
+                  <p class="form-error">Il titolo può contenere al massimo 120 caratteri.</p>
+                }
+              }
+            </div>
+
+            <div>
+              <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descrizione</label>
+              <textarea
+                formControlName="description"
+                id="description"
+                rows="3"
+                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              ></textarea>
+              @if (submitted && editForm.controls.description.errors) {
+                @if (editForm.controls.description.errors['maxlength']) {
+                  <p class="form-error">La descrizione può contenere al massimo 1000 caratteri.</p>
+                }
+              }
+            </div>
+
+            <div>
+              <label for="tags" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tag</label>
+              <input
+                type="text"
+                formControlName="tags"
+                id="tags"
+                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              >
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Separa i tag con una virgola.</p>
+            </div>
+
+            <div>
+              <label for="image" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Immagine <span class="font-normal text-gray-400">(opzionale — lascia vuoto per mantenere quella attuale)</span>
+              </label>
+
+              @if (currentImageUrl() && !imagePreview()) {
+                <img
+                  [src]="currentImageUrl()!"
+                  alt="Immagine attuale"
+                  class="mb-3 max-h-48 rounded-lg border border-gray-200 dark:border-gray-700 object-contain"
+                >
+              }
+
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/jpg"
+                (change)="onFileSelected($event)"
+                id="image"
+                class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+              >
+
+              @if (imagePreview()) {
+                <img [src]="imagePreview()!" alt="Anteprima nuova immagine" class="mt-3 max-h-64 rounded-lg border border-gray-200 dark:border-gray-700 object-contain">
+              }
+            </div>
+
+            <div class="flex gap-3">
+              <button
+                type="submit"
+                [disabled]="isSubmitting()"
+                class="flex-1 text-white bg-teal-700 hover:bg-teal-800 rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 cursor-pointer"
+              >
+                @if (isSubmitting()) { Salvataggio in corso... } @else { Salva modifiche }
+              </button>
+              <a
+                [routerLink]="['/meme', memeId]"
+                class="px-5 py-2.5 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-center"
+              >
+                Annulla
+              </a>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    }
+
+  </div>
+</section>

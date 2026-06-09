@@ -1,7 +1,7 @@
 <div class="max-w-3xl mx-auto px-4 py-8 space-y-10">
 
   @if (!authService.isUserAuthenticated()) {
-    <section class="bg-gradient-to-r from-teal-600 to-teal-500 dark:from-teal-800 dark:to-teal-700 rounded-2xl p-8 text-white shadow-lg">
+    <section class="bg-linear-to-r from-teal-600 to-teal-500 dark:from-teal-800 dark:to-teal-700 rounded-2xl p-8 text-white shadow-lg">
       <h1 class="text-3xl font-bold mb-2">Benvenuto su Meme Museum!</h1>
       <p class="mb-6 max-w-2xl text-teal-50">
         Esplora la nostra collezione di meme, scopri ogni giorno il "Meme del giorno" e, una volta
@@ -61,7 +61,7 @@
             </p>
           </div>
           @if (memeOfTheDay()!.description) {
-            <p class="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 break-words">{{ memeOfTheDay()!.description }}</p>
+            <p class="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 wrap-break-word">{{ memeOfTheDay()!.description }}</p>
           }
           @if (memeOfTheDay()!.tags?.length) {
             <div class="flex flex-wrap gap-1.5">
@@ -127,7 +127,7 @@
                 </p>
               </div>
               @if (meme.description) {
-                <p class="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 break-words">{{ meme.description }}</p>
+                <p class="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 wrap-break-word">{{ meme.description }}</p>
               }
               @if (meme.tags?.length) {
                 <div class="flex flex-wrap gap-1.5">

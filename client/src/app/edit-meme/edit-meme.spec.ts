@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ExploreComponent } from './explore';
+import { EditMemeComponent } from './edit-meme';
 
-describe('ExploreComponent', () => {
-  let component: ExploreComponent;
-  let fixture: ComponentFixture<ExploreComponent>;
+describe('EditMemeComponent', () => {
+  let component: EditMemeComponent;
+  let fixture: ComponentFixture<EditMemeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ExploreComponent]
+      imports: [EditMemeComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ExploreComponent);
+    fixture = TestBed.createComponent(EditMemeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

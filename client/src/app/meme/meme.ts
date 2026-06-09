@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DatePipe, NgClass } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -16,6 +16,7 @@ import { MemeDetail } from '../_models/api.models';
 })
 export class MemeComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private memeService = inject(MemeService);
   private toastr = inject(ToastrService);
   authService = inject(AuthService);
@@ -25,7 +26,16 @@ export class MemeComponent implements OnInit {
   loadError = signal(false);
   isVoting = signal(false);
   isCommenting = signal(false);
+  isConfirmingDelete = signal(false);
+  isDeleting = signal(false);
   submitted = false;
+
+  isOwner = computed(() => {
+    const meme = this.meme();
+    const userId = this.authService.userId();
+    if (!meme || !userId) return false;
+    return meme.user.id === userId;
+  });
 
   commentForm = new FormGroup({
     content: new FormControl('', [Validators.required, Validators.maxLength(500)])
@@ -82,6 +92,24 @@ export class MemeComponent implements OnInit {
       error: () => {
         this.isCommenting.set(false);
         this.toastr.error('Non è stato possibile pubblicare il commento', 'Oops!');
+      }
+    });
+  }
+
+  deleteMeme() {
+    const meme = this.meme();
+    if (!meme || this.isDeleting()) return;
+
+    this.isDeleting.set(true);
+    this.memeService.deleteMeme(meme.id).subscribe({
+      next: () => {
+        this.toastr.success('Il meme è stato eliminato', 'Fatto!');
+        this.router.navigate(['/home']);
+      },
+      error: () => {
+        this.isDeleting.set(false);
+        this.isConfirmingDelete.set(false);
+        this.toastr.error('Non è stato possibile eliminare il meme', 'Oops!');
       }
     });
   }

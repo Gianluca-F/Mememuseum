@@ -57,9 +57,9 @@ export interface Comment {
 export interface MemeList {
   id: string;
   title: string;
-  description: string;
+  description: string | null;
   imageUrl: string;
-  tags?: string[];
+  tags: string[] | null;
   upvotes: number;
   downvotes: number;
   commentsCount: number;

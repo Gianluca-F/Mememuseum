@@ -2,9 +2,6 @@
 @use 'tailwindcss';
 @use 'ngx-toastr/toastr';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 @custom-variant dark (&:where(.dark, .dark *));
 
 html, body {

@@ -50,7 +50,7 @@ export class UploadMemeComponent {
 
     const formData = new FormData();
     formData.append('title', this.uploadForm.value.title as string);
-    formData.append('description', this.uploadForm.value.description ?? '');
+    formData.append('description', this.uploadForm.value.description as string);
     formData.append('tags', this.uploadForm.value.tags as string);
     formData.append('image', this.selectedFile);
 

@@ -4,84 +4,90 @@
   <section class="bg-white dark:bg-gray-800 rounded-xl shadow p-5 space-y-4">
     <h1 class="text-xl font-bold text-gray-900 dark:text-white">Esplora i meme</h1>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div>
-        <label for="search-title" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Titolo</label>
-        <input
-          id="search-title"
-          type="text"
-          [(ngModel)]="form.title"
-          placeholder="Cerca per titolo..."
-          class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-        >
-      </div>
-      <div>
-        <label for="search-tags" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Tag (separati da virgola)</label>
-        <input
-          id="search-tags"
-          type="text"
-          [(ngModel)]="form.tags"
-          placeholder="es. programmazione, gatti"
-          class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-        >
-      </div>
-    </div>
-
-    <div class="flex flex-wrap items-end gap-3">
-      @if (form.tags.trim()) {
+    <form (ngSubmit)="search()">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label for="search-match" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Corrispondenza tag</label>
+          <label for="search-title" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Titolo</label>
+          <input
+            id="search-title"
+            type="text"
+            [(ngModel)]="form.title"
+            name="title"
+            placeholder="Cerca per titolo..."
+            class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          >
+        </div>
+        <div>
+          <label for="search-tags" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Tag (separati da virgola)</label>
+          <input
+            id="search-tags"
+            type="text"
+            [(ngModel)]="form.tags"
+            name="tags"
+            placeholder="es. programmazione, gatti"
+            class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          >
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-end gap-3 mt-3">
+        @if (form.tags.trim()) {
+          <div>
+            <label for="search-match" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Corrispondenza tag</label>
+            <select
+              id="search-match"
+              [(ngModel)]="form.match"
+              name="match"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            >
+              <option value="any">Almeno uno</option>
+              <option value="all">Tutti</option>
+            </select>
+          </div>
+        }
+        <div>
+          <label for="search-sorted-by" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Ordina per</label>
           <select
-            id="search-match"
-            [(ngModel)]="form.match"
+            id="search-sorted-by"
+            [(ngModel)]="form.sortedBy"
+            name="sortedBy"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           >
-            <option value="any">Almeno uno</option>
-            <option value="all">Tutti</option>
+            @for (opt of sortedByOptions; track opt.value) {
+              <option [value]="opt.value">{{ opt.label }}</option>
+            }
           </select>
         </div>
-      }
-      <div>
-        <label for="search-sorted-by" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Ordina per</label>
-        <select
-          id="search-sorted-by"
-          [(ngModel)]="form.sortedBy"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-        >
-          @for (opt of sortedByOptions; track opt.value) {
-            <option [value]="opt.value">{{ opt.label }}</option>
-          }
-        </select>
+        <div>
+          <label for="search-sort-direction" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Direzione</label>
+          <select
+            id="search-sort-direction"
+            [(ngModel)]="form.sortDirection"
+            name="sortDirection"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          >
+            @for (opt of sortDirectionOptions; track opt.value) {
+              <option [value]="opt.value">{{ opt.label }}</option>
+            }
+          </select>
+        </div>
+        <div class="flex gap-2 ml-auto">
+          <button
+            type="button"
+            (click)="reset()"
+            class="px-4 py-2.5 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+          >
+            Reimposta
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2.5 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition-colors cursor-pointer"
+          >
+            Cerca
+          </button>
+        </div>
       </div>
-      <div>
-        <label for="search-sort-direction" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Direzione</label>
-        <select
-          id="search-sort-direction"
-          [(ngModel)]="form.sortDirection"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-        >
-          @for (opt of sortDirectionOptions; track opt.value) {
-            <option [value]="opt.value">{{ opt.label }}</option>
-          }
-        </select>
-      </div>
-      <div class="flex gap-2 ml-auto">
-        <button
-          type="button"
-          (click)="reset()"
-          class="px-4 py-2.5 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
-        >
-          Reimposta
-        </button>
-        <button
-          type="button"
-          (click)="search()"
-          class="px-4 py-2.5 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition-colors cursor-pointer"
-        >
-          Cerca
-        </button>
-      </div>
-    </div>
+    </form>
   </section>
 
   <!-- Results -->
@@ -127,7 +133,7 @@
               </p>
             </div>
             @if (meme.description) {
-              <p class="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 break-words">{{ meme.description }}</p>
+              <p class="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 wrap-break-word">{{ meme.description }}</p>
             }
             @if (meme.tags?.length) {
               <div class="flex flex-wrap gap-1.5">

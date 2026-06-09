@@ -1,17 +1,17 @@
 <div class="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
   <!-- Top Bar -->
-  <app-topbar class="flex-shrink-0"></app-topbar>
+  <app-topbar class="shrink-0"></app-topbar>
   
   <!-- Main Content Area -->
   <div class="flex flex-1 overflow-hidden">
     <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto">
+    <main #mainContent class="flex-1 overflow-y-auto">
       <ng-content></ng-content>
     </main>
     
     <!-- Desktop Sidebar -->
     <app-sidebar 
-      class="flex-shrink-0 w-64 hidden lg:block overflow-y-auto"
+      class="shrink-0 w-64 hidden lg:block overflow-y-auto"
     ></app-sidebar>
   </div>
   

@@ -42,7 +42,7 @@ export class AuthService {
 
   async updateToken(token: string) {
     const decodedToken: any = jwtDecode(token);
-    const userId = decodedToken.userId;
+    const userId = decodedToken.id;
     const userName = decodedToken.userName;
     this.authState.set({
       userId: userId,

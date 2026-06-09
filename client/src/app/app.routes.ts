@@ -3,6 +3,7 @@ import { HomeComponent } from './home/home';
 import { ExploreComponent } from './explore/explore';
 import { MemeComponent } from './meme/meme';
 import { UploadMemeComponent } from './upload-meme/upload-meme';
+import { EditMemeComponent } from './edit-meme/edit-meme';
 import { LoginComponent } from './login/login';
 import { SignupComponent } from './signup/signup';
 
@@ -27,6 +28,11 @@ export const routes: Routes = [
     path: 'meme/:id',
     component: MemeComponent,
     title: 'Meme | Meme Museum'
+  }, {
+    path: 'meme/:id/edit',
+    component: EditMemeComponent,
+    title: 'Modifica Meme | Meme Museum',
+    canActivate: [authGuard]
   }, {
     path: 'upload',
     component: UploadMemeComponent,
