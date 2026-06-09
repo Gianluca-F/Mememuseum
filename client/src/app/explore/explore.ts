@@ -31,14 +31,20 @@ export class ExploreComponent implements OnInit {
     title: '',
     tags: '',
     match: 'any',
-    orderBy: 'createdAt_DESC',
+    sortedBy: 'createdAt',
+    sortDirection: 'DESC',
   };
 
-  readonly orderByOptions = [
-    { value: 'createdAt_DESC', label: 'Più recenti' },
-    { value: 'createdAt_ASC',  label: 'Meno recenti' },
-    { value: 'upvotes_DESC',   label: 'Più upvotati' },
-    { value: 'downvotes_DESC', label: 'Più downvotati' },
+  readonly sortedByOptions = [
+    { value: 'createdAt',     label: 'Data' },
+    { value: 'upvotes',       label: 'Upvote' },
+    { value: 'downvotes',     label: 'Downvote' },
+    { value: 'commentsCount', label: 'Commenti' },
+  ];
+
+  readonly sortDirectionOptions = [
+    { value: 'DESC', label: 'Decrescente' },
+    { value: 'ASC',  label: 'Crescente' },
   ];
 
   ngOnInit() {
@@ -51,7 +57,7 @@ export class ExploreComponent implements OnInit {
   }
 
   reset() {
-    this.form = { title: '', tags: '', match: 'any', orderBy: 'createdAt_DESC' };
+    this.form = { title: '', tags: '', match: 'any', sortedBy: 'createdAt', sortDirection: 'DESC' };
   }
 
   loadPage(page: number) {
@@ -67,12 +73,7 @@ export class ExploreComponent implements OnInit {
     this.isLoading.set(true);
     this.loadError.set(false);
 
-    const [sortedBy, sortDirection] = this.form.orderBy.split('_') as [
-      MemeQueryParams['sortedBy'],
-      MemeQueryParams['sortDirection']
-    ];
-
-    const query: MemeQueryParams = { page, sortedBy, sortDirection };
+    const query: MemeQueryParams = { page, sortedBy: this.form.sortedBy, sortDirection: this.form.sortDirection };
     if (this.form.title.trim()) query.title = this.form.title.trim();
     if (this.form.tags.trim()) {
       query.tags = this.form.tags.trim();

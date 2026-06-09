@@ -42,13 +42,25 @@
         </div>
       }
       <div>
-        <label for="search-order" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Ordina per</label>
+        <label for="search-sorted-by" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Ordina per</label>
         <select
-          id="search-order"
-          [(ngModel)]="form.orderBy"
+          id="search-sorted-by"
+          [(ngModel)]="form.sortedBy"
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
         >
-          @for (opt of orderByOptions; track opt.value) {
+          @for (opt of sortedByOptions; track opt.value) {
+            <option [value]="opt.value">{{ opt.label }}</option>
+          }
+        </select>
+      </div>
+      <div>
+        <label for="search-sort-direction" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Direzione</label>
+        <select
+          id="search-sort-direction"
+          [(ngModel)]="form.sortDirection"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+        >
+          @for (opt of sortDirectionOptions; track opt.value) {
             <option [value]="opt.value">{{ opt.label }}</option>
           }
         </select>
