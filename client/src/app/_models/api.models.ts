@@ -81,3 +81,16 @@ export interface MemeDetail extends MemeList {
  * Use MemeList for array responses and MemeDetail for single meme
  */
 export type Meme = MemeList | MemeDetail;
+
+/**
+ * Query parameters for fetching memes with pagination, filtering, and sorting
+ */
+export interface MemeQueryParams {
+  page?: number;
+  limit?: number;
+  title?: string;
+  tags?: string;
+  match?: 'any' | 'all';
+  sortedBy?: 'createdAt' | 'upvotes' | 'downvotes' | 'commentsCount';
+  sortDirection?: 'ASC' | 'DESC';
+}

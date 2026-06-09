@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
-import { MemeList, MemeDetail, PaginatedResponse, Comment } from '../../_models/api.models';
-import { HttpClient } from '@angular/common/http';
+import { MemeList, MemeDetail, PaginatedResponse, Comment, MemeQueryParams } from '../../_models/api.models';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +16,19 @@ export class MemeService {
   memes = signal<MemeList[]>([]);
   isLoading = signal(false);
 
-  getAllMemes(page: number = 1, limit: number = 10) {
-    return this.http.get<PaginatedResponse<MemeList>>(`${this.API_URL}${this.BASE_PATH}?page=${page}&limit=${limit}`);
+  getAllMemes(query: MemeQueryParams = {}) {
+    const { page = 1, limit = 10, ...rest } = query;
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+
+    for (const [key, value] of Object.entries(rest)) {
+      if (value !== undefined && value !== null && value !== '') {
+        params = params.set(key, value.toString());
+      }
+    }
+
+    return this.http.get<PaginatedResponse<MemeList>>(`${this.API_URL}${this.BASE_PATH}`, { params });
   }
 
   getMemeOfTheDay() {

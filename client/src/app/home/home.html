@@ -1,4 +1,4 @@
-<div class="max-w-5xl mx-auto px-4 py-8 space-y-10">
+<div class="max-w-3xl mx-auto px-4 py-8 space-y-10">
 
   @if (!authService.isUserAuthenticated()) {
     <section class="bg-gradient-to-r from-teal-600 to-teal-500 dark:from-teal-800 dark:to-teal-700 rounded-2xl p-8 text-white shadow-lg">
@@ -24,51 +24,164 @@
     </section>
   }
 
+  <!-- Meme del giorno -->
   <section>
     <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Meme del giorno</h2>
 
-    @if (isLoading()) {
-      <div class="animate-pulse bg-white dark:bg-gray-800 rounded-xl shadow h-80"></div>
-    } @else if (loadError() || !memeOfTheDay()) {
+    @if (motdLoading()) {
+      <div class="animate-pulse bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
+        <div class="h-80 bg-gray-200 dark:bg-gray-700"></div>
+        <div class="p-5 space-y-3">
+          <div class="h-5 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+        </div>
+      </div>
+    } @else if (motdError() || !memeOfTheDay()) {
       <p class="text-gray-500 dark:text-gray-400">Nessun meme del giorno disponibile al momento.</p>
     } @else {
       <a
         [routerLink]="['/meme', memeOfTheDay()!.id]"
         class="group block bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden hover:shadow-lg transition-shadow"
       >
-        <div class="md:flex">
-          <div class="md:w-1/2 bg-gray-100 dark:bg-gray-900/60 flex items-center justify-center">
-            <img
-              [src]="imageUrl(memeOfTheDay()!.imageUrl)"
-              [alt]="memeOfTheDay()!.title"
-              class="w-full h-64 md:h-full object-contain"
-            >
-          </div>
-          <div class="p-6 md:w-1/2 flex flex-col">
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+        <div class="bg-gray-100 dark:bg-gray-900/60 flex items-center justify-center" style="min-height: 200px; max-height: 420px; overflow: hidden;">
+          <img
+            [src]="imageUrl(memeOfTheDay()!.imageUrl)"
+            [alt]="memeOfTheDay()!.title"
+            class="w-full object-contain"
+            style="max-height: 420px;"
+          >
+        </div>
+        <div class="p-5 space-y-3">
+          <div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
               {{ memeOfTheDay()!.title }}
             </h3>
-            <p class="mt-2 text-gray-600 dark:text-gray-300 line-clamp-4 break-words">
-              {{ memeOfTheDay()!.description }}
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              {{ memeOfTheDay()!.user.userName }} &middot; {{ memeOfTheDay()!.createdAt | date:'dd/MM/yyyy' }}
             </p>
-            @if (memeOfTheDay()!.tags?.length) {
-              <div class="mt-4 flex flex-wrap gap-2">
-                @for (tag of memeOfTheDay()!.tags; track tag) {
-                  <span class="px-2.5 py-1 text-xs font-medium rounded-full bg-teal-100 text-teal-700 dark:bg-teal-900 dark:text-teal-300">
-                    #{{ tag }}
-                  </span>
-                }
-              </div>
-            }
-            <div class="mt-auto pt-4 flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-              <span>{{ memeOfTheDay()!.upvotes }} upvote</span>
-              <span>{{ memeOfTheDay()!.downvotes }} downvote</span>
-              <span>{{ memeOfTheDay()!.commentsCount }} commenti</span>
-              <span class="ml-auto truncate">by {{ memeOfTheDay()!.user.userName }}</span>
+          </div>
+          @if (memeOfTheDay()!.description) {
+            <p class="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 break-words">{{ memeOfTheDay()!.description }}</p>
+          }
+          @if (memeOfTheDay()!.tags?.length) {
+            <div class="flex flex-wrap gap-1.5">
+              @for (tag of memeOfTheDay()!.tags; track tag) {
+                <span class="px-2.5 py-0.5 text-xs rounded-full bg-teal-100 text-teal-700 dark:bg-teal-900 dark:text-teal-300">
+                  #{{ tag }}
+                </span>
+              }
             </div>
+          }
+          <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 pt-1 border-t border-gray-100 dark:border-gray-700">
+            <span>{{ memeOfTheDay()!.upvotes }} upvote</span>
+            <span>{{ memeOfTheDay()!.downvotes }} downvote</span>
+            <span>{{ memeOfTheDay()!.commentsCount }} commenti</span>
           </div>
         </div>
       </a>
     }
   </section>
+
+  <!-- Tutti i meme -->
+  <section>
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Tutti i meme</h2>
+
+    @if (memesLoading()) {
+      <div class="space-y-6">
+        @for (i of [1, 2, 3]; track i) {
+          <div class="animate-pulse bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
+            <div class="h-80 bg-gray-200 dark:bg-gray-700"></div>
+            <div class="p-5 space-y-3">
+              <div class="h-5 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+              <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else if (memesError()) {
+      <p class="text-gray-500 dark:text-gray-400">Errore nel caricamento dei meme. Riprova più tardi.</p>
+    } @else if (memes().length === 0) {
+      <p class="text-gray-500 dark:text-gray-400">Nessun meme disponibile al momento.</p>
+    } @else {
+      <div class="space-y-6">
+        @for (meme of memes(); track meme.id) {
+          <a
+            [routerLink]="['/meme', meme.id]"
+            class="group block bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden hover:shadow-lg transition-shadow"
+          >
+            <div class="bg-gray-100 dark:bg-gray-900/60 flex items-center justify-center" style="min-height: 200px; max-height: 420px; overflow: hidden;">
+              <img
+                [src]="imageUrl(meme.imageUrl)"
+                [alt]="meme.title"
+                class="w-full object-contain"
+                style="max-height: 420px;"
+              >
+            </div>
+            <div class="p-5 space-y-3">
+              <div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                  {{ meme.title }}
+                </h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  {{ meme.user.userName }} &middot; {{ meme.createdAt | date:'dd/MM/yyyy' }}
+                </p>
+              </div>
+              @if (meme.description) {
+                <p class="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 break-words">{{ meme.description }}</p>
+              }
+              @if (meme.tags?.length) {
+                <div class="flex flex-wrap gap-1.5">
+                  @for (tag of meme.tags; track tag) {
+                    <span class="px-2.5 py-0.5 text-xs rounded-full bg-teal-100 text-teal-700 dark:bg-teal-900 dark:text-teal-300">
+                      #{{ tag }}
+                    </span>
+                  }
+                </div>
+              }
+              <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 pt-1 border-t border-gray-100 dark:border-gray-700">
+                <span>{{ meme.upvotes }} upvote</span>
+                <span>{{ meme.downvotes }} downvote</span>
+                <span>{{ meme.commentsCount }} commenti</span>
+              </div>
+            </div>
+          </a>
+        }
+      </div>
+
+      <div class="grid grid-cols-3 items-center pt-2">
+        <div>
+          @if (hasPreviousPage()) {
+            <button
+              type="button"
+              (click)="loadPage(currentPage() - 1)"
+              class="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+              </svg>
+              Precedente
+            </button>
+          }
+        </div>
+        <span class="text-sm text-gray-600 dark:text-gray-400 font-medium text-center">
+          Pagina {{ currentPage() }} di {{ totalPages() }}
+        </span>
+        <div class="flex justify-end">
+          @if (hasNextPage()) {
+            <button
+              type="button"
+              (click)="loadPage(currentPage() + 1)"
+              class="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+            >
+              Successivo
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </section>
+
 </div>
