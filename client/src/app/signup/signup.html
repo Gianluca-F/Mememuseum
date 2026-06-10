@@ -29,10 +29,10 @@
                 <p class="form-error">Password is required.</p>
               }
               @if(signupForm.controls.pass.errors['minlength']){
-                <p class="form-error">Password should contain at least 4 characters</p>
+                <p class="form-error">Password should contain at least 8 characters</p>
               }
               @if(signupForm.controls.pass.errors['maxlength']){
-                <p class="form-error">Password can contain at most 16 characters</p>
+                <p class="form-error">Password can contain at most 64 characters</p>
               }
             }
           </div>

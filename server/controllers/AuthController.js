@@ -35,8 +35,8 @@ export class AuthController {
     }
 
     // Validate password length here because of hashing fn during the creation process
-    if (password.length < 4 || password.length > 16) {
-      throw { status: 400, message: 'Password must be between 4 and 16 characters' };
+    if (password.length < 8 || password.length > 64) {
+      throw { status: 400, message: 'Password must be between 8 and 64 characters' };
     }
 
     try {

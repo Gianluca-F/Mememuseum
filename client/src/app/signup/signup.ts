@@ -24,9 +24,9 @@ export class SignupComponent {
       Validators.minLength(3),
       Validators.maxLength(20)]),
     pass: new FormControl('', [
-      Validators.required, 
-      Validators.minLength(4), 
-      Validators.maxLength(16)])
+      Validators.required,
+      Validators.minLength(8),
+      Validators.maxLength(64)])
   })
   
   handleSignup() {

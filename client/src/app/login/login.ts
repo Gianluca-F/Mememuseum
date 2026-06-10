@@ -20,10 +20,7 @@ export class LoginComponent {
   submitted = false;
   loginForm = new FormGroup({
     user: new FormControl('', [Validators.required]),
-    pass: new FormControl('', [
-      Validators.required, 
-      Validators.minLength(4), 
-      Validators.maxLength(16)])
+    pass: new FormControl('', [Validators.required])
   })
 
   handleLogin() {

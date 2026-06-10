@@ -22,9 +22,6 @@
               @if(loginForm.controls.pass.errors['required']){
                 <p class="form-error">Password is required.</p>
               }
-              @if(loginForm.controls.pass.errors['minlength']){
-                <p class="form-error">Password should contain at least 4 characters</p>
-              }
             }
           </div>
           <button type="submit" class="w-full text-white bg-teal-700 hover:bg-teal-800 rounded-lg text-sm px-5 py-2.5 text-center">Log in</button>

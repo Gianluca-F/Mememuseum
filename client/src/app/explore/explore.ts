@@ -53,6 +53,13 @@ export class ExploreComponent implements OnInit {
       this.form.tags = params.get('tags') ?? '';
       this.form.match = params.get('match') === 'all' ? 'all' : 'any';
 
+      const sortedByParam = params.get('sortedBy');
+      this.form.sortedBy = this.sortedByOptions.some(opt => opt.value === sortedByParam)
+        ? sortedByParam as SearchForm['sortedBy'] 
+        : 'createdAt';
+        
+      this.form.sortDirection = params.get('sortDirection') === 'ASC' ? 'ASC' : 'DESC';
+
       const page = Math.max(1, Number(params.get('page')) || 1);
       this.fetchPage(page);
     });
@@ -72,7 +79,9 @@ export class ExploreComponent implements OnInit {
         page: page > 1 ? page : null,
         title: this.form.title.trim() || null,
         tags: this.form.tags.trim() || null,
-        match: this.form.tags.trim() ? this.form.match : null,
+        match: this.form.tags.trim() && this.form.match !== 'any' ? this.form.match : null,
+        sortedBy: this.form.sortedBy !== 'createdAt' ? this.form.sortedBy : null,
+        sortDirection: this.form.sortDirection !== 'DESC' ? this.form.sortDirection : null,
       },
       replaceUrl: true,
     });

@@ -6,7 +6,7 @@ import path from "path";
 
 export class MemeController {
 
-  static async getAllMemes({ page = 1, limit = 10, title = '', tags, match = 'any',sortedBy = 'createdAt', sortDirection = 'DESC' }) {
+  static async getAllMemes({ page = 1, limit = 10, title = '', tags, match = 'any', sortedBy = 'createdAt', sortDirection = 'DESC' }) {
     const validatedPage = Math.max(1, parseInt(page) || 1);
     const validatedLimit = Math.min(Math.max(1, parseInt(limit) || 10), 50);
     const offset = (validatedPage - 1) * validatedLimit;
@@ -199,11 +199,20 @@ export class MemeController {
     );
     const memeId = best.id;
 
-    // Save the meme of the day in the caching table
-    await MemeOfTheDay.create({
-      date: today,
-      MemeId: memeId,
-    });
+    try {
+      // Save the meme of the day in the caching table
+      await MemeOfTheDay.create({
+        date: today,
+        MemeId: memeId,
+      });
+    } catch (err) {
+      // Another request created today's row between our check and our insert
+      if (err.name === 'SequelizeUniqueConstraintError') {
+        const existing = await MemeOfTheDay.findOne({ where: { date: today } });
+        return existing.MemeId;
+      }
+      throw err;
+    }
 
     return memeId;
   }
