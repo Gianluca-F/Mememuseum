@@ -34,6 +34,11 @@ export class AuthController {
       throw { status: 400, message: 'Username and password are required' };
     }
 
+    // Validate password length here because of hashing fn during the creation process
+    if (password.length < 4 || password.length > 16) {
+      throw { status: 400, message: 'Password must be between 4 and 16 characters' };
+    }
+
     try {
       // Attempt to create a new user
       return await User.create({
@@ -41,11 +46,13 @@ export class AuthController {
         password: password, // Hashing will be handled by the User model
       });
     } catch (err) {
+      if (err.name === 'SequelizeValidationError') {
+        throw { status: 400, message: 'Username must be between 3 and 20 characters' };
+      }
       if (err.name === 'SequelizeUniqueConstraintError') {
         throw { status: 409, message: 'Username already exists' };
-      } else {
-        throw { status: 500, message: 'Error creating user' };
       }
+      throw { status: 500, message: 'Error creating user' };
     }
   }
 

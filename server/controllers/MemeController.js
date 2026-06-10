@@ -110,7 +110,8 @@ export class MemeController {
             }
           ],
         }
-      ]
+      ],
+      order: [[Comment, 'createdAt', 'DESC']] // Newest comments first
     });
 
     if (!meme) {

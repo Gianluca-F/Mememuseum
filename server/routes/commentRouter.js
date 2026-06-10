@@ -2,7 +2,8 @@ import express from 'express';
 import { CommentController } from '../controllers/CommentController.js';
 import { ensureUsersModifyOnlyTheirComments } from '../middlewares/authorization.js';
 
-export const commentRouter = express.Router();
+// mergeParams is needed to access :memeId from the parent route (/memes/:memeId/comments)
+export const commentRouter = express.Router({ mergeParams: true });
 
 /**
  * @swagger
