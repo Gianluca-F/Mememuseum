@@ -11,7 +11,10 @@ export function createModel(database) {
     userName: {
       type: DataTypes.TEXT,
       allowNull: false,
-      unique: true
+      unique: true,
+      validate: {
+        len: [3, 20]
+      }
     },
     password: {
       type: DataTypes.TEXT,

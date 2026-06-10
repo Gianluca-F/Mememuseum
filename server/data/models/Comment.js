@@ -10,7 +10,11 @@ export function createModel(database) {
     },
     content: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+        len: [1, 500]
+      }
     }
   },
 

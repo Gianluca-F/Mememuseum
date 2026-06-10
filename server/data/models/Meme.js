@@ -9,11 +9,13 @@ export function createModel(database) {
     },
     title: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: false,
+      validate: { len : [1, 120] }
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: true
+      allowNull: true,
+      validate: { len : [0, 1000] }
     },
     imageUrl: {
       type: DataTypes.TEXT,
@@ -23,6 +25,18 @@ export function createModel(database) {
     tags: {
       type: DataTypes.ARRAY(DataTypes.TEXT), // works only with PostgreSQL
       allowNull: true,
+      validate: {
+        maxTags(value) {
+          if (value && value.length > 10) {
+            throw new Error('A meme can have at most 10 tags');
+          }
+        },
+        tagLength(value) {
+          if (value && value.some(tag => tag.length > 30)) {
+            throw new Error('Each tag can be at most 30 characters long');
+          }
+        }
+      }
     },
     upvotes: {
       type: DataTypes.INTEGER,
