@@ -48,8 +48,14 @@ export class ExploreComponent implements OnInit {
   ];
 
   ngOnInit() {
-    const initialPage = Math.max(1, Number(this.route.snapshot.queryParamMap.get('page')) || 1);
-    this.loadPage(initialPage);
+    this.route.queryParamMap.subscribe(params => {
+      this.form.title = params.get('title') ?? '';
+      this.form.tags = params.get('tags') ?? '';
+      this.form.match = params.get('match') === 'all' ? 'all' : 'any';
+
+      const page = Math.max(1, Number(params.get('page')) || 1);
+      this.fetchPage(page);
+    });
   }
 
   search() {
@@ -62,11 +68,14 @@ export class ExploreComponent implements OnInit {
 
   loadPage(page: number) {
     this.router.navigate([], {
-      queryParams: { page: page > 1 ? page : null },
-      queryParamsHandling: 'merge',
+      queryParams: {
+        page: page > 1 ? page : null,
+        title: this.form.title.trim() || null,
+        tags: this.form.tags.trim() || null,
+        match: this.form.tags.trim() ? this.form.match : null,
+      },
       replaceUrl: true,
     });
-    this.fetchPage(page);
   }
 
   private fetchPage(page: number) {

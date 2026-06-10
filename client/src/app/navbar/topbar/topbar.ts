@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener, ViewChild, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../_services/auth/auth';
 import { SidebarService } from '../../_services/sidebar/sidebar.service';
 import { DarkModeToggleComponent } from './dark-mode-toggle/dark-mode-toggle';
@@ -7,13 +8,14 @@ import { DarkModeToggleComponent } from './dark-mode-toggle/dark-mode-toggle';
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [RouterLink, DarkModeToggleComponent],
+  imports: [RouterLink, FormsModule, DarkModeToggleComponent],
   templateUrl: './topbar.html',
   styleUrls: ['./topbar.scss']
 })
 export class TopbarComponent {
   authService = inject(AuthService);
   sidebarService = inject(SidebarService);
+  private router = inject(Router);
 
   @ViewChild('userMenuContainer') userMenuContainer?: ElementRef<HTMLElement>;
 
@@ -23,6 +25,13 @@ export class TopbarComponent {
 
   toggleUserMenu() {
     this.isUserMenuOpen.update(open => !open);
+  }
+
+  search(query: string) {
+    const tags = query.trim();
+    this.router.navigate(['/explore'], {
+      queryParams: tags ? { tags, match: 'any' } : null,
+    });
   }
 
   @HostListener('document:click', ['$event'])
