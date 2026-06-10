@@ -28,6 +28,8 @@ export class MemeComponent implements OnInit {
   isCommenting = signal(false);
   isConfirmingDelete = signal(false);
   isDeleting = signal(false);
+  confirmingDeleteCommentId = signal<string | null>(null);
+  deletingCommentId = signal<string | null>(null);
   submitted = false;
 
   isOwner = computed(() => {
@@ -92,6 +94,46 @@ export class MemeComponent implements OnInit {
       error: () => {
         this.isCommenting.set(false);
         this.toastr.error('Non è stato possibile pubblicare il commento', 'Oops!');
+      }
+    });
+  }
+
+  onCommentEnterKey(event: Event) {
+    event.preventDefault();
+    this.submitComment();
+  }
+
+  // Opening one delete confirmation cancels the other, so only one is pending at a time
+  startConfirmingMemeDelete() {
+    this.confirmingDeleteCommentId.set(null);
+    this.isConfirmingDelete.set(true);
+  }
+
+  startConfirmingCommentDelete(commentId: string) {
+    this.isConfirmingDelete.set(false);
+    this.confirmingDeleteCommentId.set(commentId);
+  }
+
+  isCommentOwner(userId: string) {
+    return this.authService.isUserAuthenticated() && userId === this.authService.userId();
+  }
+
+  deleteComment(commentId: string) {
+    const meme = this.meme();
+    if (!meme || this.deletingCommentId()) return;
+
+    this.deletingCommentId.set(commentId);
+    this.memeService.deleteComment(meme.id, commentId).subscribe({
+      next: () => {
+        this.deletingCommentId.set(null);
+        this.confirmingDeleteCommentId.set(null);
+        this.toastr.success('Il commento è stato eliminato', 'Fatto!');
+        this.loadMeme();
+      },
+      error: () => {
+        this.deletingCommentId.set(null);
+        this.confirmingDeleteCommentId.set(null);
+        this.toastr.error('Non è stato possibile eliminare il commento', 'Oops!');
       }
     });
   }
