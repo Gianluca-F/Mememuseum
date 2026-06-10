@@ -4,6 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ToastrService } from 'ngx-toastr';
 import { MemeService } from '../_services/meme/meme.service';
 import { AuthService } from '../_services/auth/auth';
+import { tagsValidator } from '../_validators/tags.validator';
 
 @Component({
   selector: 'app-edit-meme',
@@ -31,7 +32,7 @@ export class EditMemeComponent implements OnInit {
   editForm = new FormGroup({
     title: new FormControl('', [Validators.required, Validators.maxLength(120)]),
     description: new FormControl('', [Validators.maxLength(1000)]),
-    tags: new FormControl('')
+    tags: new FormControl('', [tagsValidator])
   });
 
   ngOnInit() {

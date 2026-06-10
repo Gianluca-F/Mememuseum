@@ -19,7 +19,10 @@ export class SignupComponent {
   authService = inject(AuthService);
   submitted = false;
   signupForm = new FormGroup({
-    user: new FormControl('', [Validators.required]),
+    user: new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+      Validators.maxLength(20)]),
     pass: new FormControl('', [
       Validators.required, 
       Validators.minLength(4), 
@@ -44,7 +47,7 @@ export class SignupComponent {
         },
         error: (err) => {
           if (err.status === 400) {
-            this.toastr.error("The password you selected was too weak", "Oops! Could not create a new user");
+            this.toastr.error("The username or password you provided does not meet the requirements", "Oops! Could not create a new user");
             return;
           }
           if (err.status === 409) {

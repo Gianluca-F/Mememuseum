@@ -13,6 +13,12 @@
               @if(signupForm.controls.user.errors['required']){
                 <p class="form-error">Username is required.</p>
               }
+              @if(signupForm.controls.user.errors['minlength']){
+                <p class="form-error">Username should contain at least 3 characters.</p>
+              }
+              @if(signupForm.controls.user.errors['maxlength']){
+                <p class="form-error">Username can contain at most 20 characters.</p>
+              }
             }
           </div>
           <div>
@@ -24,6 +30,9 @@
               }
               @if(signupForm.controls.pass.errors['minlength']){
                 <p class="form-error">Password should contain at least 4 characters</p>
+              }
+              @if(signupForm.controls.pass.errors['maxlength']){
+                <p class="form-error">Password can contain at most 16 characters</p>
               }
             }
           </div>

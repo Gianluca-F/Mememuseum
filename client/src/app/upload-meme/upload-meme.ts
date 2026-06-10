@@ -3,6 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { MemeService } from '../_services/meme/meme.service';
+import { tagsValidator } from '../_validators/tags.validator';
 
 @Component({
   selector: 'app-upload-meme',
@@ -24,7 +25,7 @@ export class UploadMemeComponent {
   uploadForm = new FormGroup({
     title: new FormControl('', [Validators.required, Validators.maxLength(120)]),
     description: new FormControl('', [Validators.maxLength(1000)]),
-    tags: new FormControl('')
+    tags: new FormControl('', [tagsValidator])
   });
 
   onFileSelected(event: Event) {

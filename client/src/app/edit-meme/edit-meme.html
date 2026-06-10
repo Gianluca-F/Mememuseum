@@ -63,7 +63,15 @@
                 id="tags"
                 class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
-              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Separa i tag con una virgola.</p>
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Separa i tag con una virgola (massimo 10 tag da 30 caratteri).</p>
+              @if (submitted && editForm.controls.tags.errors) {
+                @if (editForm.controls.tags.errors['maxTags']) {
+                  <p class="form-error">Puoi inserire al massimo 10 tag.</p>
+                }
+                @if (editForm.controls.tags.errors['tagLength']) {
+                  <p class="form-error">Ogni tag può contenere al massimo 30 caratteri.</p>
+                }
+              }
             </div>
 
             <div>
