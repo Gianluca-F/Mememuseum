@@ -2,29 +2,29 @@
 
   <!-- Search form -->
   <section class="bg-white dark:bg-gray-800 rounded-xl shadow p-5 space-y-4">
-    <h1 class="text-xl font-bold text-gray-900 dark:text-white">Esplora i meme</h1>
+    <h1 class="text-xl font-bold text-gray-900 dark:text-white">Explore memes</h1>
 
     <form (ngSubmit)="search()">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label for="search-title" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Titolo</label>
+          <label for="search-title" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
           <input
             id="search-title"
             type="text"
             [(ngModel)]="form.title"
             name="title"
-            placeholder="Cerca per titolo..."
+            placeholder="Search by title..."
             class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           >
         </div>
         <div>
-          <label for="search-tags" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Tag (separati da virgola)</label>
+          <label for="search-tags" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Tags (comma separated)</label>
           <input
             id="search-tags"
             type="text"
             [(ngModel)]="form.tags"
             name="tags"
-            placeholder="es. programmazione, gatti"
+            placeholder="e.g. programming, comic"
             class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           >
         </div>
@@ -33,20 +33,20 @@
       <div class="flex flex-wrap items-end gap-3 mt-3">
         @if (form.tags.trim()) {
           <div>
-            <label for="search-match" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Corrispondenza tag</label>
+            <label for="search-match" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Tag match</label>
             <select
               id="search-match"
               [(ngModel)]="form.match"
               name="match"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             >
-              <option value="any">Almeno uno</option>
-              <option value="all">Tutti</option>
+              <option value="any">At least one</option>
+              <option value="all">All</option>
             </select>
           </div>
         }
         <div>
-          <label for="search-sorted-by" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Ordina per</label>
+          <label for="search-sorted-by" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Sort by</label>
           <select
             id="search-sorted-by"
             [(ngModel)]="form.sortedBy"
@@ -59,7 +59,7 @@
           </select>
         </div>
         <div>
-          <label for="search-sort-direction" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Direzione</label>
+          <label for="search-sort-direction" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Direction</label>
           <select
             id="search-sort-direction"
             [(ngModel)]="form.sortDirection"
@@ -77,13 +77,13 @@
             (click)="reset()"
             class="px-4 py-2.5 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
           >
-            Reimposta
+            Reset
           </button>
           <button
             type="submit"
             class="px-4 py-2.5 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition-colors cursor-pointer"
           >
-            Cerca
+            Search
           </button>
         </div>
       </div>
@@ -105,9 +105,9 @@
       }
     </div>
   } @else if (loadError()) {
-    <p class="text-gray-500 dark:text-gray-400 text-center py-12">Errore nel caricamento dei meme. Riprova più tardi.</p>
+    <p class="text-gray-500 dark:text-gray-400 text-center py-12">Error loading memes. Please try again later.</p>
   } @else if (memes().length === 0) {
-    <p class="text-gray-500 dark:text-gray-400 text-center py-12">Nessun meme trovato per i criteri inseriti.</p>
+    <p class="text-gray-500 dark:text-gray-400 text-center py-12">No memes found for the given criteria.</p>
   } @else {
     <div class="space-y-6">
       @for (meme of memes(); track meme.id) {
@@ -145,9 +145,9 @@
               </div>
             }
             <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 pt-1 border-t border-gray-100 dark:border-gray-700">
-              <span>{{ meme.upvotes }} upvote</span>
-              <span>{{ meme.downvotes }} downvote</span>
-              <span>{{ meme.commentsCount }} commenti</span>
+              <span>{{ meme.upvotes }} upvotes</span>
+              <span>{{ meme.downvotes }} downvotes</span>
+              <span>{{ meme.commentsCount }} comments</span>
             </div>
           </div>
         </a>
@@ -166,12 +166,12 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
-            Precedente
+            Previous
           </button>
         }
       </div>
       <span class="text-sm text-gray-600 dark:text-gray-400 font-medium text-center">
-        Pagina {{ currentPage() }} di {{ totalPages() }}
+        Page {{ currentPage() }} of {{ totalPages() }}
       </span>
       <div class="flex justify-end">
         @if (hasNextPage()) {
@@ -180,7 +180,7 @@
             (click)="loadPage(currentPage() + 1)"
             class="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
           >
-            Successivo
+            Next
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
             </svg>

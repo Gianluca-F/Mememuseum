@@ -31,7 +31,7 @@ export const routes: Routes = [
   }, {
     path: 'meme/:id/edit',
     component: EditMemeComponent,
-    title: 'Modifica Meme | Meme Museum',
+    title: 'Edit Meme | Meme Museum',
     canActivate: [authGuard]
   }, {
     path: 'upload',

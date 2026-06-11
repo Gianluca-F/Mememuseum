@@ -2,23 +2,23 @@
 
   @if (!authService.isUserAuthenticated()) {
     <section class="bg-linear-to-r from-teal-600 to-teal-500 dark:from-teal-800 dark:to-teal-700 rounded-2xl p-8 text-white shadow-lg">
-      <h1 class="text-3xl font-bold mb-2">Benvenuto su Meme Museum!</h1>
+      <h1 class="text-3xl font-bold mb-2">Welcome to Meme Museum!</h1>
       <p class="mb-6 max-w-2xl text-teal-50">
-        Esplora la nostra collezione di meme, scopri ogni giorno il "Meme del giorno" e, una volta
-        registrato, carica i tuoi contenuti, commenta e vota i meme della community.
+        Explore our meme collection, discover the "Meme of the Day" every day and, once
+        registered, upload your own content, comment and vote on the community's memes.
       </p>
       <div class="flex flex-wrap gap-3">
         <a
           routerLink="/signup"
           class="px-5 py-2.5 rounded-lg bg-white text-teal-700 font-medium hover:bg-teal-50 transition-colors cursor-pointer"
         >
-          Crea un account
+          Create an account
         </a>
         <a
           routerLink="/explore"
           class="px-5 py-2.5 rounded-lg border border-white/70 text-white font-medium hover:bg-white/10 transition-colors cursor-pointer"
         >
-          Esplora i meme
+          Explore memes
         </a>
       </div>
     </section>
@@ -26,7 +26,7 @@
 
   <!-- Meme del giorno -->
   <section>
-    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Meme del giorno</h2>
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Meme of the Day</h2>
 
     @if (motdLoading()) {
       <div class="animate-pulse bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
@@ -37,7 +37,7 @@
         </div>
       </div>
     } @else if (motdError() || !memeOfTheDay()) {
-      <p class="text-gray-500 dark:text-gray-400">Nessun meme del giorno disponibile al momento.</p>
+      <p class="text-gray-500 dark:text-gray-400">No Meme of the Day available right now.</p>
     } @else {
       <a
         [routerLink]="['/meme', memeOfTheDay()!.id]"
@@ -73,9 +73,9 @@
             </div>
           }
           <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 pt-1 border-t border-gray-100 dark:border-gray-700">
-            <span>{{ memeOfTheDay()!.upvotes }} upvote</span>
-            <span>{{ memeOfTheDay()!.downvotes }} downvote</span>
-            <span>{{ memeOfTheDay()!.commentsCount }} commenti</span>
+            <span>{{ memeOfTheDay()!.upvotes }} upvotes</span>
+            <span>{{ memeOfTheDay()!.downvotes }} downvotes</span>
+            <span>{{ memeOfTheDay()!.commentsCount }} comments</span>
           </div>
         </div>
       </a>
@@ -84,7 +84,7 @@
 
   <!-- Tutti i meme -->
   <section>
-    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Tutti i meme</h2>
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">All memes</h2>
 
     @if (memesLoading()) {
       <div class="space-y-6">
@@ -99,9 +99,9 @@
         }
       </div>
     } @else if (memesError()) {
-      <p class="text-gray-500 dark:text-gray-400">Errore nel caricamento dei meme. Riprova più tardi.</p>
+      <p class="text-gray-500 dark:text-gray-400">Error loading memes. Please try again later.</p>
     } @else if (memes().length === 0) {
-      <p class="text-gray-500 dark:text-gray-400">Nessun meme disponibile al momento.</p>
+      <p class="text-gray-500 dark:text-gray-400">No memes available right now.</p>
     } @else {
       <div class="space-y-6">
         @for (meme of memes(); track meme.id) {
@@ -139,9 +139,9 @@
                 </div>
               }
               <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 pt-1 border-t border-gray-100 dark:border-gray-700">
-                <span>{{ meme.upvotes }} upvote</span>
-                <span>{{ meme.downvotes }} downvote</span>
-                <span>{{ meme.commentsCount }} commenti</span>
+                <span>{{ meme.upvotes }} upvotes</span>
+                <span>{{ meme.downvotes }} downvotes</span>
+                <span>{{ meme.commentsCount }} comments</span>
               </div>
             </div>
           </a>
@@ -159,12 +159,12 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
               </svg>
-              Precedente
+              Previous
             </button>
           }
         </div>
         <span class="text-sm text-gray-600 dark:text-gray-400 font-medium text-center">
-          Pagina {{ currentPage() }} di {{ totalPages() }}
+          Page {{ currentPage() }} of {{ totalPages() }}
         </span>
         <div class="flex justify-end">
           @if (hasNextPage()) {
@@ -173,7 +173,7 @@
               (click)="loadPage(currentPage() + 1)"
               class="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
             >
-              Successivo
+              Next
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
               </svg>

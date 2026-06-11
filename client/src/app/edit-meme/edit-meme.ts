@@ -45,7 +45,7 @@ export class EditMemeComponent implements OnInit {
     this.memeService.getMemeById(this.memeId).subscribe({
       next: (meme) => {
         if (meme.user.id !== this.authService.userId()) {
-          this.toastr.error('Non sei autorizzato a modificare questo meme', 'Accesso negato');
+          this.toastr.error('You are not allowed to edit this meme', 'Access denied');
           this.router.navigate(['/meme', this.memeId]);
           return;
         }
@@ -81,7 +81,7 @@ export class EditMemeComponent implements OnInit {
   handleEdit() {
     this.submitted = true;
     if (this.editForm.invalid) {
-      this.toastr.error('Controlla i campi obbligatori', 'Dati mancanti');
+      this.toastr.error('Check the required fields', 'Missing data');
       return;
     }
 
@@ -96,20 +96,20 @@ export class EditMemeComponent implements OnInit {
     this.isSubmitting.set(true);
     this.memeService.updateMeme(this.memeId, formData).subscribe({
       next: () => {
-        this.toastr.success('Il meme è stato aggiornato!', 'Fatto!');
+        this.toastr.success('The meme has been updated!', 'Done!');
         this.router.navigate(['/meme', this.memeId]);
       },
       error: (err) => {
         this.isSubmitting.set(false);
         if (err.status === 400) {
-          this.toastr.error('Controlla i dati inseriti e riprova', 'Richiesta non valida');
+          this.toastr.error('Check the data you entered and try again', 'Invalid request');
           return;
         }
         if (err.status === 403) {
-          this.toastr.error('Non sei autorizzato a modificare questo meme', 'Accesso negato');
+          this.toastr.error('You are not allowed to edit this meme', 'Access denied');
           return;
         }
-        this.toastr.error('Si è verificato un errore imprevisto (' + err.status + ')', 'Oops!');
+        this.toastr.error('An unexpected error occurred (' + err.status + ')', 'Oops!');
       }
     });
   }

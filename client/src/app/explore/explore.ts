@@ -36,15 +36,15 @@ export class ExploreComponent implements OnInit {
   };
 
   readonly sortedByOptions = [
-    { value: 'createdAt',     label: 'Data' },
-    { value: 'upvotes',       label: 'Upvote' },
-    { value: 'downvotes',     label: 'Downvote' },
-    { value: 'commentsCount', label: 'Commenti' },
+    { value: 'createdAt',     label: 'Date' },
+    { value: 'upvotes',       label: 'Upvotes' },
+    { value: 'downvotes',     label: 'Downvotes' },
+    { value: 'commentsCount', label: 'Comments' },
   ];
 
   readonly sortDirectionOptions = [
-    { value: 'DESC', label: 'Decrescente' },
-    { value: 'ASC',  label: 'Crescente' },
+    { value: 'DESC', label: 'Descending' },
+    { value: 'ASC',  label: 'Ascending' },
   ];
 
   ngOnInit() {

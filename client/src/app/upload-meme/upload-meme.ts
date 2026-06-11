@@ -45,7 +45,7 @@ export class UploadMemeComponent {
   handleUpload() {
     this.submitted = true;
     if (this.uploadForm.invalid || !this.selectedFile) {
-      this.toastr.error('Compila tutti i campi obbligatori e seleziona un\'immagine', 'Dati mancanti');
+      this.toastr.error('Fill in all required fields and select an image', 'Missing data');
       return;
     }
 
@@ -58,16 +58,16 @@ export class UploadMemeComponent {
     this.isSubmitting.set(true);
     this.memeService.createMeme(formData).subscribe({
       next: (meme) => {
-        this.toastr.success('Il tuo meme è stato pubblicato!', 'Fatto!');
+        this.toastr.success('Your meme has been published!', 'Done!');
         this.router.navigate(['/meme', meme.id]);
       },
       error: (err) => {
         this.isSubmitting.set(false);
         if (err.status === 400) {
-          this.toastr.error('Controlla i dati inseriti e riprova', 'Richiesta non valida');
+          this.toastr.error('Check the data you entered and try again', 'Invalid request');
           return;
         }
-        this.toastr.error('Si è verificato un errore imprevisto (' + err.status + ')', 'Oops!');
+        this.toastr.error('An unexpected error occurred (' + err.status + ')', 'Oops!');
       }
     });
   }

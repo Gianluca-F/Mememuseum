@@ -57,7 +57,7 @@ export class MemeComponent implements OnInit {
       return;
     }
     if (!this.authService.isUserAuthenticated()) {
-      this.toastr.warning('Effettua il login per votare questo meme', 'Accesso richiesto');
+      this.toastr.warning('Log in to vote for this meme', 'Login required');
       return;
     }
 
@@ -68,7 +68,7 @@ export class MemeComponent implements OnInit {
         this.isVoting.set(false);
       },
       error: () => {
-        this.toastr.error('Non è stato possibile registrare il voto', 'Oops!');
+        this.toastr.error('Could not register your vote', 'Oops!');
         this.isVoting.set(false);
       }
     });
@@ -88,12 +88,12 @@ export class MemeComponent implements OnInit {
         this.commentForm.reset();
         this.submitted = false;
         this.isCommenting.set(false);
-        this.toastr.success('Il tuo commento è stato pubblicato', 'Fatto!');
+        this.toastr.success('Your comment has been posted', 'Done!');
         this.loadMeme();
       },
       error: () => {
         this.isCommenting.set(false);
-        this.toastr.error('Non è stato possibile pubblicare il commento', 'Oops!');
+        this.toastr.error('Could not post your comment', 'Oops!');
       }
     });
   }
@@ -127,13 +127,13 @@ export class MemeComponent implements OnInit {
       next: () => {
         this.deletingCommentId.set(null);
         this.confirmingDeleteCommentId.set(null);
-        this.toastr.success('Il commento è stato eliminato', 'Fatto!');
+        this.toastr.success('The comment has been deleted', 'Done!');
         this.loadMeme();
       },
       error: () => {
         this.deletingCommentId.set(null);
         this.confirmingDeleteCommentId.set(null);
-        this.toastr.error('Non è stato possibile eliminare il commento', 'Oops!');
+        this.toastr.error('Could not delete the comment', 'Oops!');
       }
     });
   }
@@ -145,13 +145,13 @@ export class MemeComponent implements OnInit {
     this.isDeleting.set(true);
     this.memeService.deleteMeme(meme.id).subscribe({
       next: () => {
-        this.toastr.success('Il meme è stato eliminato', 'Fatto!');
+        this.toastr.success('The meme has been deleted', 'Done!');
         this.router.navigate(['/home']);
       },
       error: () => {
         this.isDeleting.set(false);
         this.isConfirmingDelete.set(false);
-        this.toastr.error('Non è stato possibile eliminare il meme', 'Oops!');
+        this.toastr.error('Could not delete the meme', 'Oops!');
       }
     });
   }
