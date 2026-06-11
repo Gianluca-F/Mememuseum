@@ -26,7 +26,11 @@ app.use(morgan('dev'));
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' }
 }));
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:4200',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Authorization', 'Content-Type']
+}));
 
 // Middleware per il parsing del corpo delle richieste JSON
 app.use(express.json());
@@ -38,7 +42,7 @@ app.use('/uploads', express.static('uploads'));
 app.use(apiDocsRouter);
 
 // Middleware per la sanitizzazione degli input
-app.use(sanitizeInput); // NOTE: Verificare che non causi problemi
+app.use(sanitizeInput);
 
 // Definizione delle routes
 app.use('/auth', authenticationRouter);
