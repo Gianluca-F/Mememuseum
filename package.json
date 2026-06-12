@@ -1,0 +1,22 @@
+{
+  "name": "mememuseum",
+  "version": "1.0.0",
+  "description": "Peoject of Web Technologies course at Naples University Federico II.",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gianluca-F/Mememuseum.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Gianluca-F/Mememuseum/issues"
+  },
+  "homepage": "https://github.com/Gianluca-F/Mememuseum#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.3"
+  }
+}
