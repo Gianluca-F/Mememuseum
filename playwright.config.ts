@@ -73,14 +73,16 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: 'npm --prefix .server start',
-      url: 'http://localhost:3000',
+      command: 'npm --prefix server start',
+      url: 'http://localhost:3000/memes',
       reuseExistingServer: !process.env.CI,
+      timeout: 120_000, 
     },
     {
-      command: 'npm --prefix .client start',
+      command: 'npm --prefix client start',
       url: 'http://localhost:4200',
       reuseExistingServer: !process.env.CI,
+      timeout: 120_000,
     }
   ],
 });
