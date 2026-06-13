@@ -58,6 +58,9 @@ coverage/
 
 # 👇 Others
 *.tgz
+*.png
+*.jpg
+*.jpeg
 
 # Playwright
 /test-results/
