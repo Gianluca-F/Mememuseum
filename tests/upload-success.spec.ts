@@ -10,6 +10,11 @@ test('file upload succeeds with valid file', async ({ page, user }) => {
   await page.getByRole('textbox', { name: 'Password' }).fill(user.password);
   await page.getByRole('button', { name: 'Log In' }).click();
 
+  const hamburgerMenuButton = page.getByRole('button', { name: 'Toggle mobile menu' });
+  if (await hamburgerMenuButton.isVisible()) {
+    await hamburgerMenuButton.click();
+  }
+  
   await page.getByRole('link', { name: 'Upload Meme' }).click();
   await page.getByRole('textbox', { name: 'Title' }).fill('Cat meme');
   await page.getByRole('textbox', { name: 'Description' }).fill('Cat meme for testing purposw');
