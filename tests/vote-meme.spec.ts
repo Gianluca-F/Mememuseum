@@ -22,5 +22,5 @@ test("upvotes and downvotes work correctly", async ({ page, user }) => {
   await expect(downvoteButton).toHaveText(String(downvotesBefore + 1));
 
   await downvoteButton.click();
-  await expect(downvoteButton).toHaveText(String(downvotesBefore + 1));
+  await expect(downvoteButton).toHaveText(String(downvotesBefore));
 });
