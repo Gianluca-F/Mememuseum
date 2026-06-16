@@ -25,11 +25,11 @@ export const routes: Routes = [
     component: MemeComponent,
     title: 'Meme of the Day | Meme Museum'
   }, {
-    path: 'meme/:id',
+    path: 'memes/:id',
     component: MemeComponent,
     title: 'Meme | Meme Museum'
   }, {
-    path: 'meme/:id/edit',
+    path: 'memes/:id/edit',
     component: EditMemeComponent,
     title: 'Edit Meme | Meme Museum',
     canActivate: [authGuard]

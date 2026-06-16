@@ -112,7 +112,7 @@
     <div class="space-y-6">
       @for (meme of memes(); track meme.id) {
         <a
-          [routerLink]="['/meme', meme.id]"
+          [routerLink]="['/memes', meme.id]"
           class="group block bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden hover:shadow-lg transition-shadow"
         >
           <div class="bg-gray-100 dark:bg-gray-900/60 flex items-center justify-center" style="min-height: 200px; max-height: 420px; overflow: hidden;">
