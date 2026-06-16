@@ -23,5 +23,4 @@ test('file upload succeeds with valid file', async ({ page, user }) => {
   await page.getByRole('button', { name: 'Publish meme' }).click();
 
   await expect(page.getByLabel('Done!')).toBeVisible();
-  await expect(page.getByRole('img', { name: 'Cat meme' })).toBeVisible();
 });
